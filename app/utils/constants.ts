@@ -2,12 +2,6 @@ import { FaFolder } from 'react-icons/fa';
 import { IoMdHome } from "react-icons/io";
 import { FaTasks } from "react-icons/fa";
 
-export enum TaskStatus {
-  TODO = 'TODO',
-  IN_PROGRESS = 'IN_PROGRESS',
-  REVIEW = 'REVIEW',
-  DONE = 'DONE',
-}
 export const MENU_ITEMS = [
     {
         id: 1,
