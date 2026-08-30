@@ -1,0 +1,1 @@
+export const tailwindButton = 'border border-gray-300 shadow-md py-1 p-2 rounded-xl cursor-pointer hover:shadow-gray-400 transition duration-200 ease-in-out'
