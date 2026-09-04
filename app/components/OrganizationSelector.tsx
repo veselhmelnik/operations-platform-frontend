@@ -7,6 +7,7 @@ import { apiClient } from '../lib/api/api-client'
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import AddOrganizationModal from './Modals/AddOrganizationModal'
+import { routes } from '../lib/routes'
 
 const OrganizationSelector = () => {
   const params = useParams()
@@ -21,7 +22,7 @@ const OrganizationSelector = () => {
   })
 
   const changeOrganization = (newOrganizationId: string) => {
-    router.push(`/organizations/${newOrganizationId}`)
+    router.push(routes.organization(newOrganizationId))
   }
 
   if (!organizations.length) {

@@ -3,13 +3,14 @@ import { useRouter } from 'next/navigation'
 import { RiLogoutBoxRFill } from 'react-icons/ri'
 import { logout } from '../lib/api/auth'
 import { apiClient } from '../lib/api/api-client'
+import { routes } from '../lib/routes'
 
 const LogoutButton = () => {
   const router = useRouter()
 
   const handleLogout = async () => {
     await logout(apiClient)
-    router.push('/login')
+    router.push(routes.login())
     router.refresh()
   }
   return (

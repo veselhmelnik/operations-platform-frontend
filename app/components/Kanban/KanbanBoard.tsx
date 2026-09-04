@@ -20,22 +20,22 @@ import { Board, Task } from '@/app/types'
 import { COLUMNS } from '@/app/utils/constants'
 import TaskCard from './TaskCard'
 import ColumnContainer from './ColumnContainer'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { getProjectBoard } from '@/app/lib/api/projects'
+import { apiClient } from '@/app/lib/api/api-client'
+import { useParams } from 'next/navigation'
 
-type KanbanBoardProps = {
-  board: Board | undefined
-  organizationId: string
-  projectId: string
-}
-
-export function KanbanBoard({
-  board,
-  organizationId,
-  projectId,
-}: KanbanBoardProps) {
+export function KanbanBoard() {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const queryClient = useQueryClient()
+  const params = useParams()
+  const organizationId = params.organizationId as string
+  const projectId = params.projectId as string
   type TasksUpdater = Task[] | ((prev: Task[]) => Task[])
+  const { data: board } = useQuery({
+    queryKey: ['board', organizationId, projectId],
+    queryFn: () => getProjectBoard(apiClient, organizationId, projectId),
+  })
   function updateTasks(updater: TasksUpdater) {
     queryClient.setQueryData<Board>(
       ['board', organizationId, projectId],

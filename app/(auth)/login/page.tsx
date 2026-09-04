@@ -2,6 +2,7 @@
 
 import { apiClient } from '@/app/lib/api/api-client'
 import { login } from '@/app/lib/api/auth'
+import { routes } from '@/app/lib/routes'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import {toast} from 'sonner'
@@ -22,7 +23,7 @@ const LoginPage = () => {
 
     try {
       await login(apiClient, email, password)
-      router.push('/')
+      router.push(routes.dashboard())
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed')
     } finally {

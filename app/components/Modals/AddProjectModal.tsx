@@ -1,6 +1,7 @@
 'use client'
 import { apiClient } from '@/app/lib/api/api-client'
 import { createProject } from '@/app/lib/api/projects'
+import { routes } from '@/app/lib/routes'
 import { Project } from '@/app/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { X } from 'lucide-react'
@@ -23,17 +24,13 @@ const AddProjectModal = ({ setIsAdding }: AddProjectModalProps) => {
   const organizationId = params.organizationId as string
 
   const createProjectMutation = useMutation({
-    mutationFn: () =>
-      createProject(apiClient, organizationId, {
-        name: newProject.name,
-        description: newProject.description,
-      }),
+    mutationFn: () => createProject(apiClient, organizationId, newProject),
 
     onSuccess: (project: Project) => {
       queryClient.invalidateQueries({ queryKey: ['organizations'] })
       setIsAdding(false)
 
-      router.push(`/organizations/${organizationId}/projects/${project.id}`)
+      router.push(routes.project(organizationId, project.id))
     },
   })
 
@@ -100,9 +97,7 @@ const AddProjectModal = ({ setIsAdding }: AddProjectModalProps) => {
               disabled={createProjectMutation.isPending}
               className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              {createProjectMutation.isPending
-                ? 'Creating...'
-                : 'Add Project'}
+              {createProjectMutation.isPending ? 'Creating...' : 'Add Project'}
             </button>
           </div>
         </form>

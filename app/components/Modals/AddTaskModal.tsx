@@ -1,33 +1,42 @@
 'use client'
-import { TaskStatus } from '@/app/types/enums'
-import { Statuses } from '@/app/utils/constants'
+import { apiClient } from '@/app/lib/api/api-client'
+import { CreateTaskPayload } from '@/app/lib/api/dto/create-task.dto'
+import { createTask } from '@/app/lib/api/tasks'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { X } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import React, { useState } from 'react'
 
-const COLUMNS: Column[] = [
-  { id: Statuses.TODO, title: 'To Do' },
-  { id: Statuses.IN_PROGRESS, title: 'In Progress' },
-  { id: Statuses.REVIEW, title: 'Preview' },
-  { id: Statuses.DONE, title: 'Done' },
-]
-
-interface Column {
-  id: TaskStatus
-  title: string
-}
 type AddTaskModalProps = {
   setIsAdding: (v: boolean) => void
 }
 
 const AddTaskModal = ({ setIsAdding }: AddTaskModalProps) => {
-  const [newTask, setNewTask] = useState({
+  const [newTask, setNewTask] = useState<CreateTaskPayload>({
     title: '',
     description: '',
-    status: 'TODO' as TaskStatus,
   })
-  function addTask(e: React.FormEvent) {
+  const queryClient = useQueryClient()
+  const params = useParams<{
+    organizationId: string
+    projectId: string
+  }>()
+  const { organizationId, projectId } = params
+
+  const createTaskMutation = useMutation({
+    mutationFn: (task: CreateTaskPayload) => createTask(apiClient, organizationId, projectId, task),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['board', organizationId, projectId] })
+      setIsAdding(false)
+    },
+  })
+
+  function addTask(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
-    setIsAdding(false)
+    if (!newTask.title.trim()) return
+
+    createTaskMutation.mutate(newTask)
   }
 
   return (
@@ -73,29 +82,7 @@ const AddTaskModal = ({ setIsAdding }: AddTaskModalProps) => {
               className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none ring-ring focus:ring-2"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-card-foreground">
-                Column
-              </label>
-              <select
-                value={newTask.status}
-                onChange={(e) =>
-                  setNewTask((s) => ({
-                    ...s,
-                    status: e.target.value as TaskStatus,
-                  }))
-                }
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none ring-ring focus:ring-2"
-              >
-                {COLUMNS.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          <div className="grid grid-cols-2 gap-4"></div>
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
@@ -106,9 +93,10 @@ const AddTaskModal = ({ setIsAdding }: AddTaskModalProps) => {
             </button>
             <button
               type="submit"
+              disabled={createTaskMutation.isPending}
               className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Add task
+              {createTaskMutation.isPending ? 'Creating...' : 'Add Task'}
             </button>
           </div>
         </form>

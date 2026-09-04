@@ -3,18 +3,17 @@ import { getProjects } from '@/app/lib/api/projects'
 import { useQuery } from '@tanstack/react-query'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { apiClient } from '@/app/lib/api/api-client'
 import AddTaskModal from '../Modals/AddTaskModal'
 import AddProjectModal from '../Modals/AddProjectModal'
+import { routes } from '@/app/lib/routes'
 
-type KanbanHeaderProps = {
-  organizationId: string
-  projectId: string
-}
-
-const KanbanHeader = ({ organizationId, projectId }: KanbanHeaderProps) => {
+const KanbanHeader = () => {
   const router = useRouter()
+  const params = useParams()
+  const organizationId = params.organizationId as string
+  const projectId = params.projectId as string
   const { data: projects } = useQuery({
     queryKey: ['projects', organizationId],
     queryFn: () => getProjects(apiClient, organizationId),
@@ -22,7 +21,7 @@ const KanbanHeader = ({ organizationId, projectId }: KanbanHeaderProps) => {
   const [isAddingTask, setIsAddingTask] = useState(false)
   const [isAddingProject, setIsAddingProject] = useState(false)
   const changeProject = (newProjectId: string) => {
-    router.push(`/organizations/${organizationId}/projects/${newProjectId}`)
+    router.push(routes.project(organizationId, newProjectId))
   }
   return (
     <div className="flex justify-between">
@@ -37,7 +36,7 @@ const KanbanHeader = ({ organizationId, projectId }: KanbanHeaderProps) => {
           </button>
         </div>
       </div>
-      <div className='flex gap-2'>
+      <div className="flex gap-2">
         <select
           value={projectId}
           onChange={(e) => changeProject(e.target.value)}

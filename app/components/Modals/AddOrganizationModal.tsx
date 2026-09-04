@@ -1,6 +1,7 @@
 'use client'
 import { apiClient } from '@/app/lib/api/api-client'
 import { createOrganization } from '@/app/lib/api/organizations'
+import { routes } from '@/app/lib/routes'
 import { Organization } from '@/app/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { X } from 'lucide-react'
@@ -24,7 +25,7 @@ const AddOrganizationModal = ({ setIsAdding }: AddOrganizationModalProps) => {
       queryClient.invalidateQueries({ queryKey: ['organizations'] })
       setIsAdding(false)
 
-      router.push(`/organizations/${organization.id}`)
+      router.push(routes.organization(organization.id))
     },
   })
 
