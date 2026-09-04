@@ -35,6 +35,7 @@ export function KanbanBoard() {
     queryKey: queryKeys.board(organizationId, projectId),
     queryFn: () => getProjectBoard(apiClient, organizationId, projectId),
   })
+
   function updateTasks(updater: TasksUpdater) {
     queryClient.setQueryData<Board>(
       ['board', organizationId, projectId],
@@ -142,10 +143,6 @@ export function KanbanBoard() {
     updateTasks((prev) => arrayMove(prev, activeIndex, overIndex))
   }
 
-  function deleteTask(id: string) {
-    updateTasks((prev) => prev.filter((t) => t.id !== id))
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto">
@@ -162,7 +159,6 @@ export function KanbanBoard() {
                 key={column.id}
                 column={column}
                 tasks={tasks.filter((t) => t.status === column.id)}
-                onDeleteTask={deleteTask}
               />
             ))}
           </div>
@@ -172,10 +168,6 @@ export function KanbanBoard() {
           </DragOverlay>
         </DndContext>
       </div>
-
-      {/* {isAdding && (
-        <AddItemModal setIsAdding={setIsAdding} setTasks={setTasks} />
-      )} */}
     </div>
   )
 }

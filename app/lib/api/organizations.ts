@@ -1,4 +1,5 @@
 import { ApiFetcher } from "./api-client"
+import { apiRoutes } from "./api-routes"
 import { CreateOrganizationPayload } from "./dto/create-organization.dto"
 
 export type Organization = {
@@ -9,11 +10,11 @@ export type Organization = {
 }
 
 export function getOrganizations(api: ApiFetcher) {
-    return api<Organization[]>('/organizations')
+    return api<Organization[]>(apiRoutes.organizations.root())
 }
 
 export function createOrganization(api: ApiFetcher, data: CreateOrganizationPayload) {
-    return api<Organization>('/organizations', {
+    return api<Organization>(apiRoutes.organizations.root(), {
         method: 'POST',
         body: JSON.stringify(data)
     })

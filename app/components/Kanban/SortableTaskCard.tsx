@@ -6,10 +6,8 @@ import { GripVertical } from "lucide-react"
 
 export default function SortableTaskCard({
   task,
-  onDelete,
 }: {
   task: Task
-  onDelete: (id: string) => void
 }) {
   const {
     attributes,
@@ -28,7 +26,7 @@ export default function SortableTaskCard({
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-      <TaskCard task={task} onDelete={onDelete}>
+      <TaskCard task={task}>
         <button
           {...listeners}
           className="mt-0.5 cursor-grab text-muted-foreground active:cursor-grabbing"

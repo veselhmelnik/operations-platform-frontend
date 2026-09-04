@@ -1,4 +1,5 @@
 import { ApiFetcher } from "./api-client"
+import { apiRoutes } from "./api-routes"
 
 export type CurrentUser = {
     id: string
@@ -6,7 +7,7 @@ export type CurrentUser = {
 }
 
 export function login(api: ApiFetcher, email: string, password: string) {
-    return api<{ message: string }>('/auth/login', {
+    return api<{ message: string }>(apiRoutes.auth.login(), {
         method: 'POST',
         body: JSON.stringify({
             email,
@@ -16,11 +17,11 @@ export function login(api: ApiFetcher, email: string, password: string) {
 }
 
 export function logout(api: ApiFetcher) {
-    return api<{message: string}>('/auth/logout', {
+    return api<{message: string}>(apiRoutes.auth.logout(), {
         method: 'POST'
     })
 }
 
 export function getCurrentUser(api: ApiFetcher) {
-    return api<CurrentUser>('/auth/me')
+    return api<CurrentUser>(apiRoutes.auth.me())
 }

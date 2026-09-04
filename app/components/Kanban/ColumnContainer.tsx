@@ -7,11 +7,9 @@ import { useDroppable } from "@dnd-kit/core"
 export default function ColumnContainer({
   column,
   tasks,
-  onDeleteTask,
 }: {
   column: Column
   tasks: Task[]
-  onDeleteTask: (id: string) => void
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: column.id,
@@ -43,7 +41,6 @@ export default function ColumnContainer({
             <SortableTaskCard
               key={task.id}
               task={task}
-              onDelete={onDeleteTask}
             />
           ))}
         </div>

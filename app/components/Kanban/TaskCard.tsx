@@ -1,17 +1,17 @@
+import { useDeleteTask } from '@/app/hooks/useDeleteTask'
 import { Task } from '@/app/types'
 import { Trash2 } from 'lucide-react'
 
 export default function TaskCard({
   task,
-  onDelete,
   children,
   isOverlay,
 }: {
   task: Task
-  onDelete?: (id: string) => void
   children?: React.ReactNode
   isOverlay?: boolean
 }) {
+  const deleteTaskMutation = useDeleteTask()
   return (
     <div
       className={`group relative rounded-lg border border-border bg-card p-3 shadow-sm transition-shadow hover:shadow-md ${
@@ -25,23 +25,20 @@ export default function TaskCard({
             <h3 className="text-sm font-medium text-card-foreground">
               {task.title}
             </h3>
-            {onDelete && (
-              <button
-                onClick={() => onDelete(task.id)}
-                className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-                aria-label="Delete task"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            )}
+            <button
+              onClick={() => deleteTaskMutation.mutate(task.id)}
+              className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+              aria-label="Delete task"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
           </div>
           {task.description && (
             <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
               {task.description}
             </p>
           )}
-          <div className="mt-3">
-          </div>
+          <div className="mt-3"></div>
         </div>
       </div>
     </div>
