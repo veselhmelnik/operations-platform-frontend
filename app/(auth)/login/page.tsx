@@ -1,5 +1,6 @@
 'use client'
 
+import { apiClient } from '@/app/lib/api/api-client'
 import { login } from '@/app/lib/api/auth'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -20,7 +21,7 @@ const LoginPage = () => {
     setIsLoading(true)
 
     try {
-      await login(email, password)
+      await login(apiClient, email, password)
       router.push('/')
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed')
@@ -50,7 +51,7 @@ const LoginPage = () => {
           />
 
           <div>
-            <button className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
+            <button className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
               {isLoading ? 'Loading...' : 'Login'}
             </button>
           </div>

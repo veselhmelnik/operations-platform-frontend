@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation'
 
 const HeaderMenu = () => {
   const path = usePathname()
-  console.log(path)
   return (
     <Link
       href={path==='/' ? '/projects' : '/'}

@@ -1,12 +1,12 @@
-import { apiFetch } from "./api";
+import { ApiFetcher } from "./api-client"
 
 export type CurrentUser = {
     id: string
     email: string
 }
 
-export function login(email: string, password: string) {
-    return apiFetch<{ message: string }>('/auth/login', {
+export function login(api: ApiFetcher, email: string, password: string) {
+    return api<{ message: string }>('/auth/login', {
         method: 'POST',
         body: JSON.stringify({
             email,
@@ -15,12 +15,12 @@ export function login(email: string, password: string) {
     })
 }
 
-export function logout() {
-    return apiFetch<{message: string}>('/auth/logout', {
+export function logout(api: ApiFetcher) {
+    return api<{message: string}>('/auth/logout', {
         method: 'POST'
     })
 }
 
-export function getCurrentUser() {
-    return apiFetch<CurrentUser>('/auth/me')
+export function getCurrentUser(api: ApiFetcher) {
+    return api<CurrentUser>('/auth/me')
 }

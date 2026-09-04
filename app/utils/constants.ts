@@ -1,6 +1,26 @@
 import { FaFolder } from 'react-icons/fa';
 import { IoMdHome } from "react-icons/io";
 import { FaTasks } from "react-icons/fa";
+import { TaskStatus } from '../types/enums';
+
+export enum Statuses {
+  TODO = 'TODO',
+  IN_PROGRESS = 'IN_PROGRESS',
+  REVIEW = 'REVIEW',
+  DONE = 'DONE',
+}
+
+export interface Column {
+  id: TaskStatus
+  title: string
+}
+
+export const COLUMNS: Column[] = [
+  { id: Statuses.TODO, title: 'To Do' },
+  { id: Statuses.IN_PROGRESS, title: 'In Progress' },
+  { id: Statuses.REVIEW, title: 'Preview' },
+  { id: Statuses.DONE, title: 'Done' },
+]
 
 export const MENU_ITEMS = [
     {
