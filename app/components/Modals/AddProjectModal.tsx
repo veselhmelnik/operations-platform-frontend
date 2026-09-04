@@ -1,11 +1,13 @@
 'use client'
+import { useProjectParams } from '@/app/hooks/useProjectParams'
 import { apiClient } from '@/app/lib/api/api-client'
 import { createProject } from '@/app/lib/api/projects'
+import { queryKeys } from '@/app/lib/queryKeys'
 import { routes } from '@/app/lib/routes'
 import { Project } from '@/app/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { X } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -20,14 +22,13 @@ const AddProjectModal = ({ setIsAdding }: AddProjectModalProps) => {
   })
   const queryClient = useQueryClient()
   const router = useRouter()
-  const params = useParams()
-  const organizationId = params.organizationId as string
+  const { organizationId } = useProjectParams()
 
   const createProjectMutation = useMutation({
     mutationFn: () => createProject(apiClient, organizationId, newProject),
 
     onSuccess: (project: Project) => {
-      queryClient.invalidateQueries({ queryKey: ['organizations'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.organizations })
       setIsAdding(false)
 
       router.push(routes.project(organizationId, project.id))

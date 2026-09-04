@@ -3,19 +3,19 @@ import { getProjects } from '@/app/lib/api/projects'
 import { useQuery } from '@tanstack/react-query'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { apiClient } from '@/app/lib/api/api-client'
 import AddTaskModal from '../Modals/AddTaskModal'
 import AddProjectModal from '../Modals/AddProjectModal'
 import { routes } from '@/app/lib/routes'
+import { useProjectParams } from '@/app/hooks/useProjectParams'
+import { queryKeys } from '@/app/lib/queryKeys'
 
 const KanbanHeader = () => {
   const router = useRouter()
-  const params = useParams()
-  const organizationId = params.organizationId as string
-  const projectId = params.projectId as string
+  const { organizationId, projectId } = useProjectParams()
   const { data: projects } = useQuery({
-    queryKey: ['projects', organizationId],
+    queryKey: queryKeys.projects(projectId),
     queryFn: () => getProjects(apiClient, organizationId),
   })
   const [isAddingTask, setIsAddingTask] = useState(false)

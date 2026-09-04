@@ -23,17 +23,16 @@ import ColumnContainer from './ColumnContainer'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getProjectBoard } from '@/app/lib/api/projects'
 import { apiClient } from '@/app/lib/api/api-client'
-import { useParams } from 'next/navigation'
+import { useProjectParams } from '@/app/hooks/useProjectParams'
+import { queryKeys } from '@/app/lib/queryKeys'
 
 export function KanbanBoard() {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const queryClient = useQueryClient()
-  const params = useParams()
-  const organizationId = params.organizationId as string
-  const projectId = params.projectId as string
+  const { organizationId, projectId } = useProjectParams()
   type TasksUpdater = Task[] | ((prev: Task[]) => Task[])
   const { data: board } = useQuery({
-    queryKey: ['board', organizationId, projectId],
+    queryKey: queryKeys.board(organizationId, projectId),
     queryFn: () => getProjectBoard(apiClient, organizationId, projectId),
   })
   function updateTasks(updater: TasksUpdater) {

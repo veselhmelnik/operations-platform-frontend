@@ -1,23 +1,24 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { getOrganizations } from '../lib/api/organizations'
 import { apiClient } from '../lib/api/api-client'
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import AddOrganizationModal from './Modals/AddOrganizationModal'
 import { routes } from '../lib/routes'
+import { useProjectParams } from '../hooks/useProjectParams'
+import { queryKeys } from '../lib/queryKeys'
 
 const OrganizationSelector = () => {
-  const params = useParams()
   const router = useRouter()
   const [isAdding, setIsAdding] = useState(false)
 
-  const organizationId = params.organizationId as string
+  const { organizationId } = useProjectParams()
 
   const { data: organizations = [] } = useQuery({
-    queryKey: ['organizations'],
+    queryKey: queryKeys.organizations,
     queryFn: () => getOrganizations(apiClient),
   })
 
@@ -50,7 +51,7 @@ const OrganizationSelector = () => {
         <Plus className="h-4 w-4" />
         Add organization
       </button>
-        {isAdding && <AddOrganizationModal setIsAdding={setIsAdding} />}
+      {isAdding && <AddOrganizationModal setIsAdding={setIsAdding} />}
     </div>
   )
 }
