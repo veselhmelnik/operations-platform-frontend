@@ -6,6 +6,8 @@ export const routes = {
     organization: (organizationId: string) =>
         `/organizations/${organizationId}`,
 
+    members: (organizationId: string) => `/organizations/${organizationId}/members`,
+
     project: (organizationId: string, projectId: string) =>
         `/organizations/${organizationId}/projects/${projectId}`,
 

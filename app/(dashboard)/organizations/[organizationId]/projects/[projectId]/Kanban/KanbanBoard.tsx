@@ -14,9 +14,7 @@ import {
   type DragOverEvent,
   type UniqueIdentifier,
 } from '@dnd-kit/core'
-import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { TaskStatus } from '@/app/types/enums'
-import { Board, Task } from '@/app/types'
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { COLUMNS } from '@/app/utils/constants'
 import TaskCard from './TaskCard'
 import ColumnContainer from './ColumnContainer'
@@ -25,42 +23,22 @@ import { getProjectBoard } from '@/app/lib/api/projects'
 import { apiClient } from '@/app/lib/api/api-client'
 import { useProjectParams } from '@/app/hooks/useProjectParams'
 import { queryKeys } from '@/app/lib/queryKeys'
+import { useMoveTask } from '@/app/hooks/tasks/useMoveTask'
+import {
+  getDropTarget,
+  moveTaskInBoard,
+} from '@/app/utils/helpers/dndBoard.helper'
 
 export function KanbanBoard() {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const queryClient = useQueryClient()
   const { organizationId, projectId } = useProjectParams()
-  type TasksUpdater = Task[] | ((prev: Task[]) => Task[])
+  const moveTaskMutation = useMoveTask()
+
   const { data: board } = useQuery({
     queryKey: queryKeys.board(organizationId, projectId),
     queryFn: () => getProjectBoard(apiClient, organizationId, projectId),
   })
-
-  function updateTasks(updater: TasksUpdater) {
-    queryClient.setQueryData<Board>(
-      ['board', organizationId, projectId],
-      (oldBoard) => {
-        if (!oldBoard) return oldBoard
-
-        const currentTasks = Object.values(oldBoard).flat()
-
-        const nextTasks =
-          typeof updater === 'function' ? updater(currentTasks) : updater
-
-        const nextBoard: Board = {
-          TODO: [],
-          IN_PROGRESS: [],
-          REVIEW: [],
-          DONE: [],
-        }
-
-        for (const task of nextTasks) {
-          nextBoard[task.status].push(task)
-        }
-        return nextBoard
-      },
-    )
-  }
 
   const tasks = board ? Object.values(board).flat() : []
 
@@ -79,23 +57,23 @@ export function KanbanBoard() {
 
   function handleDragOver(event: DragOverEvent) {
     const { active, over } = event
-    if (!over) return
 
-    const activeTaskId = active.id as string
-    const overId = over.id as string
+    if (!over || !board) return
 
-    const activeColumnId = tasks.find((t) => t.id === activeTaskId)?.status
-    const overColumnId = COLUMNS.some((c) => c.id === overId)
-      ? (overId as TaskStatus)
-      : tasks.find((t) => t.id === overId)?.status
+    const target = getDropTarget(board, over.id as string)
 
-    if (!activeColumnId || !overColumnId || activeColumnId === overColumnId)
-      return
+    if (!target) return
 
-    updateTasks((prev) =>
-      prev.map((t) =>
-        t.id === activeTaskId ? { ...t, status: overColumnId } : t,
-      ),
+    const result = moveTaskInBoard(
+      board,
+      active.id as string,
+      target.status,
+      target.position,
+    )
+
+    queryClient.setQueryData(
+      queryKeys.board(organizationId, projectId),
+      result.board,
     )
   }
 
@@ -103,44 +81,28 @@ export function KanbanBoard() {
     const { active, over } = event
     setActiveId(null)
 
-    if (!over) return
+    if (!over || !board) return
 
-    const activeTaskId = active.id as string
-    const overId = over.id as string
+    const taskId = active.id as string
 
-    const activeIndex = tasks.findIndex((t) => t.id === activeTaskId)
-    const overColumnId = COLUMNS.some((c) => c.id === overId)
-      ? (overId as TaskStatus)
-      : tasks.find((t) => t.id === overId)?.status
+    const target = getDropTarget(board, over.id as string)
 
-    if (!overColumnId) return
+    if (!target) return
 
-    if (COLUMNS.some((c) => c.id === overId)) {
-      updateTasks((prev) =>
-        prev.map((t) =>
-          t.id === activeTaskId ? { ...t, status: overColumnId } : t,
-        ),
-      )
-      return
-    }
+    const {
+      board: nextBoard,
+      status,
+      position,
+    } = moveTaskInBoard(board, taskId, target.status, target.position)
 
-    const overIndex = tasks.findIndex((t) => t.id === overId)
-    if (activeIndex === -1 || overIndex === -1 || activeIndex === overIndex)
-      return
-
-    const activeTaskItem = tasks[activeIndex]!
-    const overTaskItem = tasks[overIndex]!
-
-    if (activeTaskItem.status !== overTaskItem.status) {
-      const moved: Task = { ...activeTaskItem, status: overTaskItem.status }
-      const next = [...tasks]
-      next.splice(activeIndex, 1)
-      next.splice(overIndex, 0, moved)
-      updateTasks(next)
-      return
-    }
-
-    updateTasks((prev) => arrayMove(prev, activeIndex, overIndex))
+    moveTaskMutation.mutate({
+      taskId,
+      data: {
+        status,
+        position,
+      },
+      board: nextBoard,
+    })
   }
 
   return (

@@ -1,6 +1,6 @@
 import TaskStats from '@/app/components/TaskStats'
-import KanbanHeader from '@/app/components/Kanban/KanbanHeader'
-import { KanbanBoard } from '@/app/components/Kanban/KanbanBoard'
+import KanbanHeader from '@/app/(dashboard)/organizations/[organizationId]/projects/[projectId]/Kanban/KanbanHeader'
+import { KanbanBoard } from '@/app/(dashboard)/organizations/[organizationId]/projects/[projectId]/Kanban/KanbanBoard'
 
 export default function ProjectPage() {
   return (
@@ -8,9 +8,8 @@ export default function ProjectPage() {
       <div className="flex items-center justify-between"></div>
 
       <TaskStats />
-      <KanbanHeader  />
-      <KanbanBoard
-      />
+      <KanbanHeader />
+      <KanbanBoard />
     </div>
   )
 }

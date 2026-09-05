@@ -1,6 +1,8 @@
-import { useDeleteTask } from '@/app/hooks/useDeleteTask'
+import UpdateTaskModal from '@/app/components/Modals/UpdateTaskModal'
+import { useDeleteTask } from '@/app/hooks/tasks/useDeleteTask'
 import { Task } from '@/app/types'
 import { Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
 export default function TaskCard({
   task,
@@ -12,13 +14,18 @@ export default function TaskCard({
   isOverlay?: boolean
 }) {
   const deleteTaskMutation = useDeleteTask()
+  const [openUpdateModal, setOpenUpdateModal] = useState(false)
+
   return (
     <div
-      className={`group relative rounded-lg border border-border bg-card p-3 shadow-sm transition-shadow hover:shadow-md ${
+      className={`cursor-pointer group relative rounded-lg border border-border bg-card p-3 shadow-sm transition-shadow hover:shadow-md ${
         isOverlay ? 'rotate-2 scale-105 shadow-xl' : ''
       }`}
     >
-      <div className="flex items-start gap-2">
+      <div
+        className="flex items-start gap-2"
+        onClick={() => setOpenUpdateModal(true)}
+      >
         {children}
         <div className="flex-1">
           <div className="flex items-start justify-between gap-2">
@@ -41,6 +48,11 @@ export default function TaskCard({
           <div className="mt-3"></div>
         </div>
       </div>
+      {openUpdateModal ? (
+        <UpdateTaskModal setIsAdding={setOpenUpdateModal} task={task} />
+      ) : (
+        ''
+      )}
     </div>
   )
 }
