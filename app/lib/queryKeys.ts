@@ -6,5 +6,7 @@ export const queryKeys = {
 
     board: (organizationId: string, projectId: string) => ['board', organizationId, projectId] as const,
 
-    organizationMembers: (organizationId: string) => ['members', organizationId]
+    organizationMembers: (organizationId: string) => ['members', organizationId],
+
+    members: (organizationId: string) => ['members', organizationId],
 }

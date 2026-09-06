@@ -16,6 +16,8 @@ export const apiRoutes = {
             `/organizations/${organizationId}`,
         members: {
             root: (organizationId: string) => `/organizations/${organizationId}/members`,
+            byId: (organizationId: string, memberId: string) =>
+                `/organizations/${organizationId}/members/${memberId}`,
         },
 
         projects: {
