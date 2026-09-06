@@ -5,6 +5,8 @@ export const apiRoutes = {
         me: () => '/auth/me'
     },
     invitations: {
+        root: (organizationId: string) =>
+            `/invitations/${organizationId}/invitations`,
         byToken: (token: string) => `/invitations/${token}`,
         accept: (token: string) => `/invitations/${token}/accept`,
     },

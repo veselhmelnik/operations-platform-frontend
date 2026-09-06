@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useProjectParams } from "../useProjectParams";
+import { useProjectParams } from "../useParams";
 import { moveTask } from "../../lib/api/tasks";
 import { apiClient } from "../../lib/api/api-client";
 import { MoveTaskPayload } from "../../lib/api/dto/move-task.dto";

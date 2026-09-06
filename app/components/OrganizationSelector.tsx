@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import AddOrganizationModal from './Modals/AddOrganizationModal'
 import { routes } from '../lib/routes'
-import { useProjectParams } from '../hooks/useProjectParams'
+import { useProjectParams } from '../hooks/useParams'
 import { queryKeys } from '../lib/queryKeys'
 
 const OrganizationSelector = () => {

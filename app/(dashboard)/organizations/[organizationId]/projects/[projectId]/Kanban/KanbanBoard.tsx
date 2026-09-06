@@ -11,7 +11,7 @@ import ColumnContainer from './ColumnContainer'
 import { useQuery } from '@tanstack/react-query'
 import { getProjectBoard } from '@/app/lib/api/projects'
 import { apiClient } from '@/app/lib/api/api-client'
-import { useProjectParams } from '@/app/hooks/useProjectParams'
+import { useProjectParams } from '@/app/hooks/useParams'
 import { queryKeys } from '@/app/lib/queryKeys'
 import { useKanbanBoardDnd } from '../../../../../../hooks/useKanbanBoardDnd'
 

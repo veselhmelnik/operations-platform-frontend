@@ -2,21 +2,16 @@
 
 import { useCurrentUser } from '@/app/hooks/useCurrentUser'
 import { useInvitation, useAcceptInvitation } from '@/app/hooks/useInvitation'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { routes } from '@/app/lib/routes'
 import { useEffect } from 'react'
 
-type InvitePage = {
-  params: {
-    token: string
-  }
-}
-
-export default function InvitePage({ params }: InvitePage) {
+export default function InvitePage() {
+  const {token} = useParams<{token: string}>()
   const router = useRouter()
   const { data: currentUser, isLoading: userLoading } = useCurrentUser()
-  const { data: invitation, isLoading: invitationLoading, error: invitationError } = useInvitation(params.token)
+  const { data: invitation, isLoading: invitationLoading, error: invitationError } = useInvitation(token)
   const acceptMutation = useAcceptInvitation()
 
   const isLoading = userLoading || invitationLoading
@@ -29,7 +24,7 @@ export default function InvitePage({ params }: InvitePage) {
 
   const handleAccept = async () => {
     try {
-      await acceptMutation.mutateAsync(params.token)
+      await acceptMutation.mutateAsync(token)
       if (invitation) {
         router.push(routes.organization(invitation.organization.id))
       }
@@ -77,13 +72,13 @@ export default function InvitePage({ params }: InvitePage) {
           </p>
           <div className="mt-6 flex flex-col gap-3">
             <a
-              href={routes.login(`/invite/${params.token}`)}
+              href={routes.login(`/invite/${token}`)}
               className="w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Log in
             </a>
             <a
-              href={`/register?next=${encodeURIComponent(`/invite/${params.token}`)}`}
+              href={`/register?next=${encodeURIComponent(`/invite/${token}`)}`}
               className="w-full inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
             >
               Create account

@@ -1,6 +1,6 @@
 'use client'
 import { useUpdateTask } from '@/app/hooks/tasks/useUpdateTask'
-import { useProjectParams } from '@/app/hooks/useProjectParams'
+import { useProjectParams } from '@/app/hooks/useParams'
 import { apiClient } from '@/app/lib/api/api-client'
 import { UpdateTaskPayload } from '@/app/lib/api/dto/update-task.dto'
 import { getOrganizationMembers } from '@/app/lib/api/members'

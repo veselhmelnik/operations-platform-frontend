@@ -8,7 +8,7 @@ import { apiClient } from '@/app/lib/api/api-client'
 import AddTaskModal from '../../../../../../components/Modals/AddTaskModal'
 import AddProjectModal from '../../../../../../components/Modals/AddProjectModal'
 import { routes } from '@/app/lib/routes'
-import { useProjectParams } from '@/app/hooks/useProjectParams'
+import { useProjectParams } from '@/app/hooks/useParams'
 import { queryKeys } from '@/app/lib/queryKeys'
 
 const KanbanHeader = () => {

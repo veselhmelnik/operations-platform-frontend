@@ -1,5 +1,5 @@
 'use client'
-import { useProjectParams } from '@/app/hooks/useProjectParams'
+import { useProjectParams } from '@/app/hooks/useParams'
 import { apiClient } from '@/app/lib/api/api-client'
 import { createProject } from '@/app/lib/api/projects'
 import { queryKeys } from '@/app/lib/queryKeys'
