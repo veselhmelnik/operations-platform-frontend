@@ -4,5 +4,6 @@ import type { OrganizationMember } from "./organizationMember";
 import type { Project } from "./project";
 import type { Task } from "./task";
 import type { User } from "./user";
+import type { Invitation, InvitationResponse } from "./invitation";
 
-export { Board, Organization, OrganizationMember, Project, Task, User }
+export { Board, Organization, OrganizationMember, Project, Task, User, Invitation, InvitationResponse }

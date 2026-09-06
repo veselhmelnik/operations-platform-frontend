@@ -1,5 +1,6 @@
 export const routes = {
-    login: () => '/login',
+    login: (next?: string) => next ? `/login?next=${encodeURIComponent(next)}` : '/login',
+    invite: (token: string) => `/invite/${token}`,
 
     dashboard: () => '/',
 
