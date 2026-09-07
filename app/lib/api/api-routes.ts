@@ -10,6 +10,10 @@ export const apiRoutes = {
         byToken: (token: string) => `/invitations/${token}`,
         accept: (token: string) => `/invitations/${token}/accept`,
     },
+    billing: {
+        checkout: (organizationId: string) => `/organizations/${organizationId}/billing/checkout`,
+        portal: (organizationId: string) => `/organizations/${organizationId}/billing/portal`,
+    },
     organizations: {
         root: () => '/organizations',
         byId: (organizationId: string) =>

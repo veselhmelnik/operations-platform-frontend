@@ -1,4 +1,4 @@
-import NoProjects from '@/app/components/NoProjects'
+import NoProjects from '@/app/components/EmptyProjects'
 import { apiServer } from '@/app/lib/api/api-server'
 import { getProjects } from '@/app/lib/api/projects'
 import { redirect } from 'next/navigation'

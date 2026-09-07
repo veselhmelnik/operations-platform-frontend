@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import OrganizationSelector from './OrganizationSelector'
+import ProjectSelector from './ProjectSelector'
 import SidebarMenu from './SidebarMenu'
 import SubscriptionCard from './SubscriptionCard'
 import SidebarUser from './SidebarUser'
@@ -19,9 +20,20 @@ const Sidebar = () => {
             </h1>
           </div>
         </Link>
+
         <OrganizationSelector />
-        <SidebarMenu />
-        <SubscriptionCard />
+
+        <div className="flex flex-col gap-3">
+          <span className="px-4 text-xs font-semibold uppercase text-muted-foreground">
+            Workspace
+          </span>
+          <ProjectSelector />
+          <SidebarMenu />
+        </div>
+
+        <div className="border-t border-border pt-6">
+          <SubscriptionCard />
+        </div>
       </div>
 
       <SidebarUser />

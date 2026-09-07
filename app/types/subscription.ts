@@ -13,6 +13,7 @@ export type SubscriptionLimits = {
 export type Subscription = {
     plan: SubscriptionPlan
     status: string
+    currentPeriodEnd: string
     usage: SubscriptionUsage
     limits: SubscriptionLimits
 }
