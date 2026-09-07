@@ -6,7 +6,7 @@ export const apiRoutes = {
     },
     invitations: {
         root: (organizationId: string) =>
-            `/invitations/${organizationId}/invitations`,
+            `/invitations/${organizationId}`,
         byToken: (token: string) => `/invitations/${token}`,
         accept: (token: string) => `/invitations/${token}/accept`,
     },
