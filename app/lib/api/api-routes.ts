@@ -27,6 +27,9 @@ export const apiRoutes = {
                 `/organizations/${organizationId}/activity/delete`,
         },
 
+        subscription: (organizationId: string) =>
+            `/organizations/${organizationId}/subscription`,
+
         projects: {
             root: (organizationId: string) =>
                 `/organizations/${organizationId}/projects`,

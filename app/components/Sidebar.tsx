@@ -4,6 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import OrganizationSelector from './OrganizationSelector'
 import SidebarMenu from './SidebarMenu'
+import SubscriptionCard from './SubscriptionCard'
+import SidebarUser from './SidebarUser'
 
 const Sidebar = () => {
   return (
@@ -19,12 +21,10 @@ const Sidebar = () => {
         </Link>
         <OrganizationSelector />
         <SidebarMenu />
+        <SubscriptionCard />
       </div>
 
-      <div>
-        <div>test@test.com</div>
-        <div>OWNER</div>
-      </div>
+      <SidebarUser />
     </aside>
   )
 }
