@@ -20,6 +20,13 @@ export const apiRoutes = {
                 `/organizations/${organizationId}/members/${memberId}`,
         },
 
+        activity: {
+            root: (organizationId: string) =>
+                `/organizations/${organizationId}/activity`,
+            deleteAll: (organizationId: string) =>
+                `/organizations/${organizationId}/activity/delete`,
+        },
+
         projects: {
             root: (organizationId: string) =>
                 `/organizations/${organizationId}/projects`,

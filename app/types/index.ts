@@ -1,3 +1,4 @@
+import type { Activity, ActivityMetadata } from "./activity";
 import type { Board } from "./board";
 import type { Organization } from "./organization";
 import type { OrganizationMember } from "./organizationMember";
@@ -6,4 +7,4 @@ import type { Task } from "./task";
 import type { User } from "./user";
 import type { Invitation, InvitationResponse } from "./invitation";
 
-export { Board, Organization, OrganizationMember, Project, Task, User, Invitation, InvitationResponse }
+export { Activity, ActivityMetadata, Board, Organization, OrganizationMember, Project, Task, User, Invitation, InvitationResponse }

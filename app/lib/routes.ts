@@ -9,6 +9,8 @@ export const routes = {
     
     members: (organizationId: string) => `/organizations/${organizationId}/members`,
 
+    activity: (organizationId: string) => `/organizations/${organizationId}/activity`,
+
     project: (organizationId: string, projectId: string) =>
         `/organizations/${organizationId}/projects/${projectId}`,
 

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { routes } from '@/app/lib/routes'
-import { RiTeamLine } from 'react-icons/ri'
+import { RiTeamLine, RiHistoryLine } from 'react-icons/ri'
 import { useOrganizationParams } from '../hooks/useParams'
 
 const menuItems = [
@@ -11,6 +11,11 @@ const menuItems = [
     label: 'Members',
     icon: RiTeamLine,
     getHref: (organizationId: string) => routes.members(organizationId),
+  },
+  {
+    label: 'Activity',
+    icon: RiHistoryLine,
+    getHref: (organizationId: string) => routes.activity(organizationId),
   },
 ]
 
