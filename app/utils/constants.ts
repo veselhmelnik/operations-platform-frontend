@@ -2,7 +2,6 @@ import { FaFolder } from 'react-icons/fa';
 import { IoMdHome } from "react-icons/io";
 import { FaTasks } from "react-icons/fa";
 import { TaskStatus } from '../types/enums';
-import { SubscriptionPlan } from '../types/subscription';
 
 export enum Statuses {
   TODO = 'TODO',
@@ -43,11 +42,6 @@ export const MENU_ITEMS = [
         name: 'Tasks',
     },
 ]
-
-export const PLAN_LIMITS: Record<SubscriptionPlan, { projects: number | null; members: number | null }> = {
-    FREE: { projects: 3, members: 5 },
-    PRO: { projects: null, members: null },
-}
 
 export const TASK_STATS_ITEMS = [
     {

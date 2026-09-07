@@ -6,6 +6,6 @@ import type { Project } from "./project";
 import type { Task } from "./task";
 import type { User } from "./user";
 import type { Invitation, InvitationResponse } from "./invitation";
-import type { Subscription, SubscriptionPlan } from "./subscription";
+import type { Subscription, SubscriptionPlan, SubscriptionUsage, SubscriptionLimits } from "./subscription";
 
-export { Activity, ActivityMetadata, Board, Organization, OrganizationMember, Project, Task, User, Invitation, InvitationResponse, Subscription, SubscriptionPlan }
+export { Activity, ActivityMetadata, Board, Organization, OrganizationMember, Project, Task, User, Invitation, InvitationResponse, Subscription, SubscriptionPlan, SubscriptionUsage, SubscriptionLimits }

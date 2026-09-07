@@ -1,9 +1,18 @@
 export type SubscriptionPlan = 'FREE' | 'PRO'
 
+export type SubscriptionUsage = {
+    projects: number
+    members: number
+}
+
+export type SubscriptionLimits = {
+    projects: number | null
+    members: number | null
+}
+
 export type Subscription = {
-    id: string
-    organizationId: string
     plan: SubscriptionPlan
-    createdAt: string
-    updatedAt: string
+    status: string
+    usage: SubscriptionUsage
+    limits: SubscriptionLimits
 }
