@@ -1,12 +1,19 @@
 'use client'
 
+import { Suspense, useState } from 'react'
+import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { toast } from 'sonner'
 import { apiClient } from '@/app/lib/api/api-client'
 import { routes } from '@/app/lib/routes'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
-import { toast } from 'sonner'
+import LogoMark from '@/app/components/LogoMark'
+import {
+  btnPrimary,
+  fieldInput,
+  fieldLabel,
+} from '@/app/utils/tailwind-constants'
 
-const RegisterPage = () => {
+function RegisterForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const next = searchParams.get('next') || routes.dashboard()
@@ -36,73 +43,115 @@ const RegisterPage = () => {
       })
       router.push(next)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Registration failed')
+      const message =
+        error instanceof Error ? error.message : 'Registration failed'
+      setError(message)
+      toast.error(message)
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-sm rounded-xl border border-border p-4 text-center shadow-sm">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {error && <p className="text-sm text-red-500">{error}</p>}
+    <div className="flex min-h-dvh items-center justify-center bg-background px-4 py-8">
+      <div className="w-full max-w-sm">
+        <div className="mb-5 flex items-center justify-center gap-2.5">
+          <LogoMark />
+          <span className="text-base font-bold tracking-[-0.035em] text-primary">
+            TaskFlow
+          </span>
+        </div>
 
-          <input
-            autoFocus
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Full name"
-            required
-            minLength={2}
-            maxLength={50}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none ring-ring focus:ring-2"
-          />
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            type="email"
-            required
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none ring-ring focus:ring-2"
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-            minLength={8}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none ring-ring focus:ring-2"
-          />
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm Password"
-            required
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none ring-ring focus:ring-2"
-          />
+        <div className="animate-spring-in rounded-2xl border border-border bg-card p-6">
+          <h1 className="text-lg font-semibold tracking-[-0.015em]">
+            Create your account
+          </h1>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Start planning and tracking work in minutes.
+          </p>
 
-          <div>
+          <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-3.5">
+            {error && <p className="text-xs text-destructive">{error}</p>}
+
+            <label className="flex flex-col gap-1.5">
+              <span className={fieldLabel}>Full name</span>
+              <input
+                autoFocus
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Maria Kane"
+                required
+                minLength={2}
+                maxLength={50}
+                className={fieldInput}
+              />
+            </label>
+
+            <label className="flex flex-col gap-1.5">
+              <span className={fieldLabel}>Email</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@company.com"
+                required
+                className={fieldInput}
+              />
+            </label>
+
+            <label className="flex flex-col gap-1.5">
+              <span className={fieldLabel}>Password</span>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="At least 8 characters"
+                required
+                minLength={8}
+                className={fieldInput}
+              />
+            </label>
+
+            <label className="flex flex-col gap-1.5">
+              <span className={fieldLabel}>Confirm password</span>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repeat your password"
+                required
+                className={fieldInput}
+              />
+            </label>
+
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              disabled={isLoading}
+              className={`${btnPrimary} mt-1 w-full`}
             >
-              {isLoading ? 'Creating account...' : 'Create account'}
+              {isLoading ? 'Creating account…' : 'Create account'}
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
 
-        <p className="mt-4 text-sm text-muted-foreground">
+        <p className="mt-4 text-center text-xs text-muted-foreground">
           Already have an account?{' '}
-          <a href={routes.login(next)} className="text-primary hover:underline">
+          <Link
+            href={routes.login(next)}
+            className="font-medium text-primary hover:underline"
+          >
             Log in
-          </a>
+          </Link>
         </p>
       </div>
     </div>
   )
 }
 
-export default RegisterPage
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
+  )
+}

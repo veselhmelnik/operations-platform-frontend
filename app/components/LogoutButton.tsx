@@ -16,9 +16,10 @@ const LogoutButton = () => {
   return (
     <button
       onClick={handleLogout}
-      className="cursor-pointer inline-flex items-center justify-center rounded-md bg-primary p-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
+      aria-label="Log out"
+      className="grid size-7.5 cursor-pointer place-items-center rounded-lg border border-border bg-muted text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
     >
-      <RiLogoutBoxRFill size={22} />
+      <RiLogoutBoxRFill size={14} />
     </button>
   )
 }

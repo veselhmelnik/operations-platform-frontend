@@ -10,13 +10,13 @@ export default async function DashboardLayout({
 }) {
   return (
     <AuthGuard>
-      <div>
-        <div className='flex'>
-          <Sidebar />
-          <div className='w-full'>
-            <Header />
-            <main>{children}</main>
-          </div>
+      <div className="flex h-dvh overflow-hidden">
+        <Sidebar />
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          <Header />
+          <main className="min-h-0 flex-1 overflow-y-auto px-5 pt-4 pb-6">
+            {children}
+          </main>
         </div>
       </div>
     </AuthGuard>

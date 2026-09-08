@@ -18,7 +18,7 @@ export function createInvitation(
   organizationId: string,
   dto: CreateInvitationPayload,
 ) {
-  return api(
+  return api<Invitation>(
     apiRoutes.invitations.root(organizationId),
     {
       method: 'POST',

@@ -10,6 +10,7 @@ import AddOrganizationModal from './Modals/AddOrganizationModal'
 import { routes } from '../lib/routes'
 import { useProjectParams } from '../hooks/useParams'
 import { queryKeys } from '../lib/queryKeys'
+import SelectField from './SelectField'
 
 const OrganizationSelector = () => {
   const router = useRouter()
@@ -31,26 +32,27 @@ const OrganizationSelector = () => {
   }
 
   return (
-    <div>
-      <div>Organizations</div>
-
-      <select
+    <div className="flex flex-col gap-1.5">
+      <SelectField
+        label="Organization"
         value={organizationId}
-        onChange={(e) => changeOrganization(e.target.value)}
+        onChange={changeOrganization}
       >
         {organizations.map((org) => (
           <option key={org.id} value={org.id}>
             {org.name}
           </option>
         ))}
-      </select>
+      </SelectField>
+
       <button
         onClick={() => setIsAdding(true)}
-        className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+        className="group flex cursor-pointer items-center gap-1.75 rounded-lg border border-dashed border-border bg-transparent px-2.5 py-1.75 text-xs font-medium text-muted-foreground transition-colors hover:border-primary-line hover:bg-primary-soft hover:text-primary"
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="size-3 transition-transform duration-300 group-hover:rotate-90" />
         Add organization
       </button>
+
       {isAdding && <AddOrganizationModal setIsAdding={setIsAdding} />}
     </div>
   )

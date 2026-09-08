@@ -6,8 +6,10 @@ import { GripVertical } from "lucide-react"
 
 export default function SortableTaskCard({
   task,
+  delayMs,
 }: {
   task: Task
+  delayMs?: number
 }) {
   const {
     attributes,
@@ -26,13 +28,13 @@ export default function SortableTaskCard({
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-      <TaskCard task={task}>
+      <TaskCard task={task} delayMs={delayMs}>
         <button
           {...listeners}
-          className="mt-0.5 cursor-grab text-muted-foreground active:cursor-grabbing"
+          className="mt-0.5 cursor-grab text-faint transition-colors hover:text-muted-foreground active:cursor-grabbing"
           aria-label="Drag task"
         >
-          <GripVertical className="h-4 w-4" />
+          <GripVertical className="size-3.5" />
         </button>
       </TaskCard>
     </div>

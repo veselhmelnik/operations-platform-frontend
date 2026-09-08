@@ -31,38 +31,44 @@ const ActivityPage = () => {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Activity Log</h1>
+    <div className="animate-fade-up flex flex-col gap-3.5">
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-semibold tracking-[-0.015em]">
+          Activity log
+        </h1>
         {activities.length > 0 && (
           <button
             onClick={handleDeleteAll}
             disabled={deleteAllActivities.isPending}
-            className="px-4 py-2 text-red-600 border border-red-600 rounded-md hover:bg-red-50 transition-colors text-sm font-medium disabled:opacity-50"
+            className="cursor-pointer rounded-lg border border-destructive/40 px-3 py-2 text-sm font-semibold text-destructive transition-colors hover:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
           >
-            {deleteAllActivities.isPending ? 'Deleting...' : 'Delete all activities'}
+            {deleteAllActivities.isPending
+              ? 'Deleting…'
+              : 'Delete all activities'}
           </button>
         )}
       </div>
 
-      <div className="border border-border rounded-lg overflow-hidden">
-        <ul className="divide-y divide-border">
-          {activities.map((activity) => (
-            <li
-              key={activity.id}
-              className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-muted/50"
-            >
-              <span className="text-sm">{formatActivityMessage(activity)}</span>
-              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                {formatRelativeTime(activity.createdAt)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {activities.length === 0 && (
-        <div className="text-center py-8 text-muted-foreground">
+      {activities.length > 0 ? (
+        <div className="overflow-hidden rounded-xl border border-border-soft bg-card">
+          <ul className="divide-y divide-border-soft">
+            {activities.map((activity) => (
+              <li
+                key={activity.id}
+                className="flex items-center justify-between gap-4 px-4 py-3 transition-colors hover:bg-muted/50"
+              >
+                <span className="text-sm">
+                  {formatActivityMessage(activity)}
+                </span>
+                <span className="text-2xs whitespace-nowrap text-faint">
+                  {formatRelativeTime(activity.createdAt)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-border py-10 text-center text-sm text-faint">
           No activity yet.
         </div>
       )}

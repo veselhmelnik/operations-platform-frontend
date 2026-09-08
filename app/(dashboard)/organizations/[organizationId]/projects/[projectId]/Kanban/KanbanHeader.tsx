@@ -5,6 +5,7 @@ import AddTaskModal from '../../../../../../components/Modals/AddTaskModal'
 import { useProjectParams } from '@/app/hooks/useParams'
 import { useCurrentMember } from '@/app/hooks/useCurrentMember'
 import { canManageWorkspace } from '@/app/utils/helpers/role.helper'
+import { btnPrimary } from '@/app/utils/tailwind-constants'
 
 const KanbanHeader = () => {
   const { organizationId } = useProjectParams()
@@ -13,20 +14,21 @@ const KanbanHeader = () => {
   const [isAddingTask, setIsAddingTask] = useState(false)
 
   return (
-    <div className="flex justify-between">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          {canAddTask && (
-            <button
-              onClick={() => setIsAddingTask(true)}
-              className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              <Plus className="h-4 w-4" />
-              Add task
-            </button>
-          )}
-        </div>
+    <div className="animate-fade-up flex items-center gap-2 [animation-delay:240ms]">
+      {canAddTask && (
+        <button onClick={() => setIsAddingTask(true)} className={btnPrimary}>
+          <Plus className="size-3.5" />
+          Add task
+        </button>
+      )}
+
+      <div className="flex-1" />
+
+      <div className="flex items-center gap-1.5 text-2xs text-faint">
+        <span className="animate-breathe size-1 rounded-full bg-primary" />
+        Drag a card between columns
       </div>
+
       {isAddingTask && <AddTaskModal setIsAdding={setIsAddingTask} />}
     </div>
   )

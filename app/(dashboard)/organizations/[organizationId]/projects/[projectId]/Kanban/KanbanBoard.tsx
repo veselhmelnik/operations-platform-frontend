@@ -1,28 +1,17 @@
 'use client'
 
-import {
-  DndContext,
-  DragOverlay,
-  closestCorners,
-} from '@dnd-kit/core'
+import { DndContext, DragOverlay, closestCorners } from '@dnd-kit/core'
 import { COLUMNS } from '@/app/utils/constants'
 import TaskCard from './TaskCard'
 import ColumnContainer from './ColumnContainer'
-import { useQuery } from '@tanstack/react-query'
-import { getProjectBoard } from '@/app/lib/api/projects'
-import { apiClient } from '@/app/lib/api/api-client'
 import { useProjectParams } from '@/app/hooks/useParams'
-import { queryKeys } from '@/app/lib/queryKeys'
-import { useKanbanBoardDnd } from '../../../../../../hooks/useKanbanBoardDnd'
+import { useKanbanBoardDnd } from '@/app/hooks/useKanbanBoardDnd'
+import { useKanbanBoard } from '@/app/hooks/UseKanbanBoard'
 
 export function KanbanBoard() {
   const { organizationId, projectId } = useProjectParams()
 
-  const { data: board } = useQuery({
-    queryKey: queryKeys.board(organizationId, projectId),
-    queryFn: () => getProjectBoard(apiClient, organizationId, projectId),
-  })
-
+  const { data: board } = useKanbanBoard()
   const tasks = board ? Object.values(board).flat() : []
 
   const {
@@ -39,30 +28,27 @@ export function KanbanBoard() {
   })
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCorners}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDragEnd={handleDragEnd}
-        >
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
-            {COLUMNS.map((column) => (
-              <ColumnContainer
-                key={column.id}
-                column={column}
-                tasks={tasks.filter((t) => t.status === column.id)}
-              />
-            ))}
-          </div>
-
-          <DragOverlay dropAnimation={null}>
-            {activeTask ? <TaskCard task={activeTask} isOverlay /> : null}
-          </DragOverlay>
-        </DndContext>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="grid auto-cols-[minmax(236px,1fr)] grid-flow-col items-start gap-2.5 overflow-x-auto pb-1.5">
+        {COLUMNS.map((column, i) => (
+          <ColumnContainer
+            key={column.id}
+            column={column}
+            index={i}
+            tasks={tasks.filter((t) => t.status === column.id)}
+          />
+        ))}
       </div>
-    </div>
+
+      <DragOverlay dropAnimation={null}>
+        {activeTask ? <TaskCard task={activeTask} isOverlay /> : null}
+      </DragOverlay>
+    </DndContext>
   )
 }

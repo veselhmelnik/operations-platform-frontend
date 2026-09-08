@@ -3,7 +3,15 @@
 import { useState } from 'react'
 import { useCreateInvitation } from '@/app/hooks/useCreateInvitation'
 import { OrganizationRole } from '@/app/types/enums'
+import {
+  btnGhost,
+  btnPrimary,
+  fieldInput,
+  fieldLabel,
+} from '@/app/utils/tailwind-constants'
 import { toast } from 'sonner'
+import ModalShell from './ModalShell'
+import SelectField from '../SelectField'
 
 type InviteMemberModalProps = {
   organizationId: string
@@ -23,34 +31,32 @@ export default function InviteMemberModal({
 
   if (!isOpen) return null
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const response = await createInvitationMutation.mutateAsync({
+      const invitation = await createInvitationMutation.mutateAsync({
         email,
         role,
       })
-      
-      // Extract token from response to build the invite link
-      // Assuming response contains the invitation token
-      const token = response.token || response.id
-      if (token) {
-        const link = `${window.location.origin}/invite/${token}`
-        setInvitationLink(link)
-        setEmail('')
-        setRole('MEMBER')
-        toast.success('Invitation sent successfully')
-      }
+
+      setInvitationLink(
+        `${window.location.origin}/invite/${invitation.token}`,
+      )
+      setEmail('')
+      setRole('MEMBER')
+      toast.success('Invitation created')
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to send invitation')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to send invitation',
+      )
     }
   }
 
   const handleCopyLink = () => {
     if (invitationLink) {
       navigator.clipboard.writeText(invitationLink)
-      toast.success('Invitation link copied to clipboard')
+      toast.success('Invitation link copied')
     }
   }
 
@@ -61,82 +67,77 @@ export default function InviteMemberModal({
     onClose()
   }
 
+  if (invitationLink) {
+    return (
+      <ModalShell
+        title="Invitation link"
+        onClose={handleClose}
+        footer={
+          <>
+            <button onClick={handleClose} className={btnGhost}>
+              Done
+            </button>
+            <button onClick={handleCopyLink} className={btnPrimary}>
+              Copy invite link
+            </button>
+          </>
+        }
+      >
+        <p className="text-xs text-muted-foreground">
+          Share this link with the new member:
+        </p>
+        <div className="rounded-lg border border-border bg-muted p-3 break-all">
+          <code className="text-xs text-foreground">{invitationLink}</code>
+        </div>
+      </ModalShell>
+    )
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-background rounded-lg border border-border p-6 w-full max-w-md shadow-lg">
-        <h2 className="text-lg font-semibold mb-4">
-          {invitationLink ? 'Invitation Link' : 'Invite Member'}
-        </h2>
+    <ModalShell
+      title="Invite member"
+      onClose={handleClose}
+      onSubmit={handleSubmit}
+      footer={
+        <>
+          <button type="button" onClick={handleClose} className={btnGhost}>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={createInvitationMutation.isPending || !email}
+            className={btnPrimary}
+          >
+            {createInvitationMutation.isPending
+              ? 'Sending…'
+              : 'Send invitation'}
+          </button>
+        </>
+      }
+    >
+      <label className="flex flex-col gap-1.5">
+        <span className={fieldLabel}>Email</span>
+        <input
+          autoFocus
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="member@example.com"
+          required
+          className={fieldInput}
+        />
+      </label>
 
-        {!invitationLink ? (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="member@example.com"
-                required
-                className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Role</label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value as OrganizationRole)}
-                className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground outline-none focus:ring-2 focus:ring-ring"
-              >
-                <option value="MEMBER">Member</option>
-                <option value="MANAGER">Manager</option>
-                <option value="ADMIN">Admin</option>
-              </select>
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="flex-1 px-4 py-2 border border-input rounded-md text-foreground hover:bg-accent transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={createInvitationMutation.isPending || !email}
-                className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {createInvitationMutation.isPending ? 'Sending...' : 'Send Invitation'}
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Share this link with the new member:
-            </p>
-            <div className="p-3 bg-muted rounded-md break-all">
-              <code className="text-sm">{invitationLink}</code>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={handleCopyLink}
-                className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-              >
-                Copy Invite Link
-              </button>
-              <button
-                onClick={handleClose}
-                className="flex-1 px-4 py-2 border border-input rounded-md text-foreground hover:bg-accent transition-colors"
-              >
-                Done
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+      <SelectField
+        label="Role"
+        value={role}
+        onChange={(value) => setRole(value as OrganizationRole)}
+      >
+        <option value="MEMBER">Member</option>
+        <option value="MANAGER">Manager</option>
+        <option value="ADMIN">Admin</option>
+        <option value="VIEWER">Viewer</option>
+      </SelectField>
+    </ModalShell>
   )
 }

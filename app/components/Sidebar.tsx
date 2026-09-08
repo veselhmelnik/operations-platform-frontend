@@ -1,37 +1,40 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import OrganizationSelector from './OrganizationSelector'
 import ProjectSelector from './ProjectSelector'
 import SidebarMenu from './SidebarMenu'
 import SubscriptionCard from './SubscriptionCard'
 import SidebarUser from './SidebarUser'
+import LogoMark from './LogoMark'
 
 const Sidebar = () => {
   return (
-    <aside className="sticky top-0 w-70 flex flex-col justify-between h-dvh border-r border-gray-300 shadow-md shadow-gray-400 p-6 ">
-      <div className="flex flex-col gap-6">
-        <Link href="/">
-          <div className="flex items-center gap-3 cursor-pointer">
-            <Image src="/assets/logo2.jpg" alt="logo" width={50} height={50} />
-            <h1 className="text-2xl text-green-600 font-semibold italic font-serif mr-20">
-              TaskFlow
-            </h1>
-          </div>
+    <aside className="flex w-65.5 shrink-0 flex-col justify-between overflow-x-hidden overflow-y-auto border-r border-border-soft bg-card">
+      <div className="flex flex-col gap-4.5 px-3.5 py-4">
+        <Link
+          href="/"
+          className="animate-slide-right flex items-center gap-2.25 px-1 py-0.5 transition-opacity hover:opacity-80"
+        >
+          <LogoMark />
+          <span className="text-base font-bold tracking-[-0.035em] text-primary">
+            TaskFlow
+          </span>
         </Link>
 
-        <OrganizationSelector />
+        <div className="animate-slide-right [animation-delay:50ms]">
+          <OrganizationSelector />
+        </div>
 
-        <div className="flex flex-col gap-3">
-          <span className="px-4 text-xs font-semibold uppercase text-muted-foreground">
+        <div className="animate-slide-right flex flex-col gap-2.5 [animation-delay:100ms]">
+          <span className="px-1 text-3xs font-semibold tracking-[0.13em] uppercase text-faint">
             Workspace
           </span>
           <ProjectSelector />
           <SidebarMenu />
         </div>
 
-        <div className="border-t border-border pt-6">
+        <div className="animate-slide-right border-t border-border-soft pt-4 [animation-delay:160ms]">
           <SubscriptionCard />
         </div>
       </div>

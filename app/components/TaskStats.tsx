@@ -1,24 +1,87 @@
-import { TASK_STATS_ITEMS } from '../utils/constants'
+'use client'
 import { IoIosArrowForward } from 'react-icons/io'
+import { useKanbanBoard } from '../hooks/UseKanbanBoard'
 
 const TaskStats = () => {
+  const { data: board } = useKanbanBoard()
+    if (!board) {
+    return null
+  }
+  const total = Object.values(board).flat().length
+
+  const stats = [
+    {
+      id: 1,
+      label: 'Total Tasks',
+      count: total,
+      footer: 'All tasks in project',
+      dot: 'var(--primary)',
+      pct: 100,
+    },
+    {
+      id: 2,
+      label: 'In Progress',
+      count: board.IN_PROGRESS.length,
+      footer: 'Currently active',
+      dot: 'var(--primary)',
+      pct: total ? Math.round((board.IN_PROGRESS.length / total) * 100) : 0,
+    },
+    {
+      id: 3,
+      label: 'In Review',
+      count: board.REVIEW.length,
+      footer: 'Waiting for review',
+      dot: 'var(--neutral)',
+      pct: total ? Math.round((board.REVIEW.length / total) * 100) : 0,
+    },
+    {
+      id: 4,
+      label: 'Completed',
+      count: board.DONE.length,
+      footer: 'Finished tasks',
+      dot: 'var(--success)',
+      pct: total ? Math.round((board.DONE.length / total) * 100) : 0,
+    },
+  ]
+
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-col-2 sm:grid-cols-2 lg:grid-cols-4">
-      {TASK_STATS_ITEMS.map((item) => {
-        return (
-          <div
-            key={item.id}
-            className="max-w-sm rounded-xl border border-border p-3 shadow-sm flex flex-col gap-2"
-          >
-            <h3 className="font-semibold">{item.label}</h3>
-            <span className="text-3xl font-semibold">{item.count}</span>
-            <div className="border-t border-border pt-2 flex items-center justify-between text-[0.7rem] text-gray-400 rounded-b-2xl">
-              {item.footer}
-              <IoIosArrowForward className="cursor-pointer" />
-            </div>
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2.5">
+      {stats.map((item, i) => (
+        <div
+          key={item.id}
+          style={{ animationDelay: `${i * 65}ms` }}
+          className="group animate-col-in relative overflow-hidden rounded-xl border border-border-soft bg-card p-3"
+        >
+          <div className="flex items-center gap-1.75">
+            <span
+              className="size-1.25 shrink-0 rounded-full"
+              style={{ background: item.dot }}
+            />
+            <h3 className="text-sm font-semibold text-muted-foreground">
+              {item.label}
+            </h3>
           </div>
-        )
-      })}
+
+          <div className="mt-1.5 text-3xl leading-none font-bold tracking-[-0.045em] tabular-nums">
+            {item.count}
+          </div>
+
+          <div className="mt-2.5 h-0.5 overflow-hidden rounded-sm bg-border">
+            <div
+              className="animate-bar-fill h-full origin-left rounded-sm"
+              style={{
+                width: `${item.pct}%`,
+                background: item.dot,
+              }}
+            />
+          </div>
+
+          <div className="mt-2 flex items-center justify-between text-2xs text-faint">
+            {item.footer}
+            <IoIosArrowForward />
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

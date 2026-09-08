@@ -8,18 +8,25 @@ export default function TaskCard({
   task,
   children,
   isOverlay,
+  delayMs,
 }: {
   task: Task
   children?: React.ReactNode
   isOverlay?: boolean
+  delayMs?: number
 }) {
   const deleteTaskMutation = useDeleteTask()
   const [openUpdateModal, setOpenUpdateModal] = useState(false)
 
+  const entrance = isOverlay ? '' : 'animate-card-in'
+
   return (
     <div
-      className={`cursor-pointer group relative rounded-lg border border-border bg-card p-3 shadow-sm transition-shadow hover:shadow-md ${
-        isOverlay ? 'rotate-2 scale-105 shadow-xl' : ''
+      style={isOverlay || delayMs === undefined ? undefined : { animationDelay: `${delayMs}ms` }}
+      className={`group relative cursor-pointer rounded-[10px] border px-2.5 py-2.25 transition-[border-color,background-color,box-shadow] ${entrance} ${
+        isOverlay
+          ? 'border-primary-line bg-elevated shadow-[0_26px_50px_-18px_rgba(0,0,0,0.95)]'
+          : 'border-border bg-muted hover:border-primary-line hover:bg-elevated hover:shadow-[0_8px_20px_-12px_rgba(0,0,0,0.9)]'
       }`}
     >
       <div
@@ -27,31 +34,33 @@ export default function TaskCard({
         onClick={() => setOpenUpdateModal(true)}
       >
         {children}
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="text-sm font-medium text-card-foreground">
+            <h3 className="text-sm leading-[1.35] font-medium tracking-[-0.012em] text-foreground text-pretty">
               {task.title}
             </h3>
             <button
-              onClick={() => deleteTaskMutation.mutate(task.id)}
-              className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                deleteTaskMutation.mutate(task.id)
+              }}
+              className="grid size-5 shrink-0 cursor-pointer place-items-center rounded-sm text-faint opacity-35 transition-[opacity,background-color,color] hover:bg-destructive/15 hover:text-destructive hover:opacity-100"
               aria-label="Delete task"
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="size-3" />
             </button>
           </div>
           {task.description && (
-            <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+            <p className="mt-1 line-clamp-2 text-xs leading-[1.45] text-muted-foreground">
               {task.description}
             </p>
           )}
-          <div className="mt-3"></div>
         </div>
       </div>
-      {openUpdateModal ? (
+
+      {openUpdateModal && (
         <UpdateTaskModal setIsAdding={setOpenUpdateModal} task={task} />
-      ) : (
-        ''
       )}
     </div>
   )

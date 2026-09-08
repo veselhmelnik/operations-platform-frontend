@@ -12,6 +12,7 @@ import { useProjectParams } from '@/app/hooks/useParams'
 import { useCurrentMember } from '@/app/hooks/useCurrentMember'
 import { canManageWorkspace } from '@/app/utils/helpers/role.helper'
 import AddProjectModal from './Modals/AddProjectModal'
+import SelectField from './SelectField'
 
 const ProjectSelector = () => {
   const router = useRouter()
@@ -35,32 +36,30 @@ const ProjectSelector = () => {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between px-4">
-        <span className="text-sm font-medium">Projects</span>
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center justify-between px-1">
+        <span className="text-xs font-medium text-muted-foreground">
+          Projects
+        </span>
         {canAddProject && (
           <button
             onClick={() => setIsAddingProject(true)}
             aria-label="Add project"
-            className="cursor-pointer rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="grid size-5 cursor-pointer place-items-center rounded-sm text-muted-foreground transition-[background-color,color,transform] duration-300 hover:rotate-90 hover:bg-primary-soft hover:text-primary"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="size-3" />
           </button>
         )}
       </div>
 
       {projects.length > 0 && (
-        <select
-          value={projectId}
-          onChange={(e) => changeProject(e.target.value)}
-          className="mx-4 rounded-md border border-input bg-background px-3 py-2 text-sm"
-        >
+        <SelectField value={projectId} onChange={changeProject}>
           {projects.map((project) => (
             <option key={project.id} value={project.id}>
               {project.name}
             </option>
           ))}
-        </select>
+        </SelectField>
       )}
 
       {isAddingProject && <AddProjectModal setIsAdding={setIsAddingProject} />}
