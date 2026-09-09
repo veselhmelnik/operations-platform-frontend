@@ -10,3 +10,9 @@ export type TaskStatus =
     | 'IN_PROGRESS'
     | 'REVIEW'
     | 'DONE'
+
+export type TaskPriority = 
+    | 'LOW'
+    | 'MEDIUM'
+    | 'HIGH'
+    | 'URGENT'

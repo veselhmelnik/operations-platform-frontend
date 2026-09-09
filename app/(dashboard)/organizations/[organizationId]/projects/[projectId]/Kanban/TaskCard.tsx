@@ -1,6 +1,7 @@
 import UpdateTaskModal from '@/app/components/Modals/UpdateTaskModal'
 import { useDeleteTask } from '@/app/hooks/tasks/useDeleteTask'
 import { Task } from '@/app/types'
+import { getPriority, labelChipStyle } from '@/app/utils/helpers/task.helper'
 import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -19,6 +20,8 @@ export default function TaskCard({
   const [openUpdateModal, setOpenUpdateModal] = useState(false)
 
   const entrance = isOverlay ? '' : 'animate-card-in'
+  const priority = getPriority(task.priority)
+  const labels = (task.labels ?? []).map(({ label }) => label)
 
   return (
     <div
@@ -43,6 +46,7 @@ export default function TaskCard({
               type="button"
               onClick={(e) => {
                 e.stopPropagation()
+                if (!confirm('Delete this task?')) return
                 deleteTaskMutation.mutate(task.id)
               }}
               className="grid size-5 shrink-0 cursor-pointer place-items-center rounded-sm text-faint opacity-35 transition-[opacity,background-color,color] hover:bg-destructive/15 hover:text-destructive hover:opacity-100"
@@ -56,6 +60,29 @@ export default function TaskCard({
               {task.description}
             </p>
           )}
+
+          <div className="mt-2 flex flex-wrap items-center gap-1">
+            <span
+              className="flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-3xs font-semibold tracking-[0.06em] text-foreground uppercase"
+              style={labelChipStyle(priority.color)}
+            >
+              <span
+                className="size-1 rounded-full"
+                style={{ background: priority.color }}
+              />
+              {priority.title}
+            </span>
+
+            {labels.map((label) => (
+              <span
+                key={label.id}
+                className="max-w-full truncate rounded-full border px-1.5 py-0.5 text-3xs font-medium text-foreground"
+                style={labelChipStyle(label.color)}
+              >
+                {label.name}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 

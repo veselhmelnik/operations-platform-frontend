@@ -32,7 +32,7 @@ const ActivityPage = () => {
 
   return (
     <div className="animate-fade-up flex flex-col gap-3.5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-lg font-semibold tracking-[-0.015em]">
           Activity log
         </h1>
@@ -55,7 +55,7 @@ const ActivityPage = () => {
             {activities.map((activity) => (
               <li
                 key={activity.id}
-                className="flex items-center justify-between gap-4 px-4 py-3 transition-colors hover:bg-muted/50"
+                className="flex flex-col items-start gap-1 px-3 py-3 transition-colors hover:bg-muted/50 sm:flex-row sm:items-center sm:justify-between sm:gap-4 md:px-4"
               >
                 <span className="text-sm">
                   {formatActivityMessage(activity)}

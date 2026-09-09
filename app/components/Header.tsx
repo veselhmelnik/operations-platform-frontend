@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Menu } from 'lucide-react'
 import LogoutButton from './LogoutButton'
 import ThemeToggle from './ThemeToggle'
 import { apiClient } from '../lib/api/api-client'
@@ -10,7 +10,7 @@ import { getProjects } from '../lib/api/projects'
 import { queryKeys } from '../lib/queryKeys'
 import { useProjectParams } from '../hooks/useParams'
 
-const Header = () => {
+const Header = ({ onMenuClick }: { onMenuClick?: () => void }) => {
   const { organizationId, projectId } = useProjectParams()
 
   const { data: organizations = [] } = useQuery({
@@ -28,11 +28,23 @@ const Header = () => {
   const project = projects.find((proj) => proj.id === projectId)
 
   return (
-    <header className="flex h-14.5 shrink-0 items-center gap-3.5 border-b border-border-soft bg-card px-5">
+    <header className="flex h-14.5 shrink-0 items-center gap-2 border-b border-border-soft bg-card px-3 md:gap-3.5 md:px-5">
+      <button
+        type="button"
+        onClick={onMenuClick}
+        aria-label="Open navigation"
+        className="-ml-1 grid size-9 shrink-0 cursor-pointer place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
+      >
+        <Menu className="size-4.5" />
+      </button>
+
       <div className="flex min-w-0 items-center gap-1.75 text-xs text-faint">
-        {organization && <span className="truncate">{organization.name}</span>}
+        {/* The org is dropped on narrow screens — the project is what matters */}
+        {organization && (
+          <span className="hidden truncate sm:inline">{organization.name}</span>
+        )}
         {organization && project && (
-          <ChevronRight className="size-2.5 shrink-0" />
+          <ChevronRight className="hidden size-2.5 shrink-0 sm:block" />
         )}
         {project && (
           <span className="truncate font-semibold text-foreground">

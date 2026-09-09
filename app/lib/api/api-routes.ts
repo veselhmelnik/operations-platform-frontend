@@ -34,6 +34,13 @@ export const apiRoutes = {
         subscription: (organizationId: string) =>
             `/organizations/${organizationId}/subscription`,
 
+        labels: {
+            root: (organizationId: string) =>
+                `/organizations/${organizationId}/labels`,
+            byId: (organizationId: string, labelId: string) =>
+                `/organizations/${organizationId}/labels/${labelId}`,
+        },
+
         projects: {
             root: (organizationId: string) =>
                 `/organizations/${organizationId}/projects`,

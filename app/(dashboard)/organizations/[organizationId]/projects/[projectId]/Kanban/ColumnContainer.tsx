@@ -23,7 +23,7 @@ export default function ColumnContainer({
     <div
       ref={setNodeRef}
       style={{ animationDelay: `${120 + index * 70}ms` }}
-      className={`animate-col-in flex flex-col rounded-xl border p-2.5 transition-colors ${
+      className={`animate-col-in flex snap-start flex-col rounded-xl border p-2.5 transition-colors ${
         isOver
           ? 'border-primary/50 bg-primary/5'
           : 'border-border-soft bg-card'

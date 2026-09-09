@@ -29,9 +29,11 @@ export default function SortableTaskCard({
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
       <TaskCard task={task} delayMs={delayMs}>
+        {/* touch-none stops the browser claiming the gesture once TouchSensor
+            has armed the drag. Larger hit area on touch, tight on desktop. */}
         <button
           {...listeners}
-          className="mt-0.5 cursor-grab text-faint transition-colors hover:text-muted-foreground active:cursor-grabbing"
+          className="mt-0.5 grid size-7 shrink-0 cursor-grab touch-none place-items-center rounded-sm text-faint transition-colors hover:text-muted-foreground active:cursor-grabbing md:size-4"
           aria-label="Drag task"
         >
           <GripVertical className="size-3.5" />

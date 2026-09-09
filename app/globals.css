@@ -30,6 +30,7 @@
   --primary-soft: rgba(201, 162, 240, 0.13);
   --primary-line: rgba(201, 162, 240, 0.32);
   --success: #7fbf9a;
+  --warning: #e0a458;
   --neutral: #8b8b93;
 
   --sidebar: #131315;
@@ -72,6 +73,7 @@
   --primary-soft: rgba(109, 63, 184, 0.1);
   --primary-line: rgba(109, 63, 184, 0.28);
   --success: #3f8f68;
+  --warning: #a86400;
   --neutral: #6b6b73;
 
   --sidebar: #ffffff;
@@ -130,6 +132,7 @@
   --color-primary-soft: var(--primary-soft);
   --color-primary-line: var(--primary-line);
   --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-neutral: var(--neutral);
   --color-scrim: var(--scrim);
 
@@ -216,6 +219,16 @@ body {
   );
   background-size: 220% 100%;
   animation: shimmer 1.5s linear infinite;
+}
+
+/* Registered with @utility (not a plain class) so it accepts variants —
+   the board only hides its scrollbar below md: `max-md:no-scrollbar`. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 }
 
 a { color: var(--primary); text-decoration: none; }

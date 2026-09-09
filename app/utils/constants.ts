@@ -19,3 +19,10 @@ export const COLUMNS: Column[] = [
   { id: Statuses.REVIEW, title: 'Preview', dot: 'var(--neutral)' },
   { id: Statuses.DONE, title: 'Done', dot: 'var(--success)' },
 ]
+
+export const TASK_PRIORITIES = [
+  { value: 'LOW', label: 'Low' },
+  { value: 'MEDIUM', label: 'Medium' },
+  { value: 'HIGH', label: 'High' },
+  { value: 'URGENT', label: 'Urgent' },
+] as const

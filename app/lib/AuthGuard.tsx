@@ -7,12 +7,12 @@ import { apiClient } from './api/api-client'
 
 function DashboardSkeleton() {
   return (
-    <div className="flex h-dvh flex-col gap-3.5 bg-background px-5 pt-4">
+    <div className="flex h-dvh flex-col gap-3.5 overflow-hidden bg-background px-3 pt-3 md:px-5 md:pt-4">
       <div className="relative h-0.5 overflow-hidden rounded-sm bg-border-soft">
         <div className="animate-drift-line absolute inset-y-0 w-[30%] rounded-sm bg-linear-to-r from-transparent via-primary to-transparent" />
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2.5">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] md:gap-2.5">
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}

@@ -13,7 +13,7 @@ export default function ThemeToggle() {
       aria-label={
         theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
       }
-      className="grid size-7.5 cursor-pointer place-items-center rounded-lg border border-border bg-muted text-muted-foreground transition-colors hover:border-primary-line hover:text-primary"
+      className="grid size-9 shrink-0 cursor-pointer place-items-center rounded-lg border border-border bg-muted text-muted-foreground transition-colors hover:border-primary-line hover:text-primary md:size-7.5"
     >
       <Sun className="size-3.5 light:hidden" />
       <Moon className="hidden size-3.5 light:block" />

@@ -45,7 +45,7 @@ const TaskStats = () => {
   ]
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2.5">
+    <div className="grid grid-cols-2 gap-2 md:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] md:gap-2.5">
       {stats.map((item, i) => (
         <div
           key={item.id}
@@ -57,12 +57,12 @@ const TaskStats = () => {
               className="size-1.25 shrink-0 rounded-full"
               style={{ background: item.dot }}
             />
-            <h3 className="text-sm font-semibold text-muted-foreground">
+            <h3 className="truncate text-sm font-semibold text-muted-foreground">
               {item.label}
             </h3>
           </div>
 
-          <div className="mt-1.5 text-3xl leading-none font-bold tracking-[-0.045em] tabular-nums">
+          <div className="mt-1.5 text-2xl leading-none font-bold tracking-[-0.045em] tabular-nums md:text-3xl">
             {item.count}
           </div>
 
@@ -76,9 +76,9 @@ const TaskStats = () => {
             />
           </div>
 
-          <div className="mt-2 flex items-center justify-between text-2xs text-faint">
-            {item.footer}
-            <IoIosArrowForward />
+          <div className="mt-2 flex items-center justify-between gap-1 text-2xs text-faint">
+            <span className="truncate">{item.footer}</span>
+            <IoIosArrowForward className="shrink-0" />
           </div>
         </div>
       ))}

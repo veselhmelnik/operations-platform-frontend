@@ -1,13 +1,16 @@
 'use client'
 import { useUpdateTask } from '@/app/hooks/tasks/useUpdateTask'
 import { useProjectParams } from '@/app/hooks/useParams'
+import { useOrganizationLabels } from '@/app/hooks/useOrganizationLabels'
+import { useCreateLabel } from '@/app/hooks/useCreateLabel'
 import { apiClient } from '@/app/lib/api/api-client'
 import { UpdateTaskPayload } from '@/app/lib/api/dto/update-task.dto'
 import { getOrganizationMembers } from '@/app/lib/api/members'
 import { queryKeys } from '@/app/lib/queryKeys'
 import { Task } from '@/app/types'
-import { TaskStatus } from '@/app/types/enums'
+import { TaskPriority, TaskStatus } from '@/app/types/enums'
 import { COLUMNS } from '@/app/utils/constants'
+import { PRIORITIES } from '@/app/utils/helpers/task.helper'
 import {
   btnGhost,
   btnPrimary,
@@ -18,6 +21,7 @@ import { useQuery } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import ModalShell from './ModalShell'
 import SelectField from '../SelectField'
+import { LabelPicker } from '../LabelPicker'
 
 type UpdateTaskModalProps = {
   setIsAdding: (v: boolean) => void
@@ -29,15 +33,38 @@ const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
     title: task.title,
     description: task.description,
     status: task.status,
+    priority: task.priority,
     assigneeId: task.assigneeId,
+    labelIds: (task.labels ?? []).map(({ label }) => label.id),
   })
   const { organizationId } = useProjectParams()
   const updateTaskMutation = useUpdateTask()
+  const createLabelMutation = useCreateLabel(organizationId)
 
   const { data: members = [] } = useQuery({
     queryKey: queryKeys.organizationMembers(organizationId),
     queryFn: () => getOrganizationMembers(apiClient, organizationId),
   })
+
+  const { data: availableLabels = [] } = useOrganizationLabels()
+
+  const selectedLabelIds = updatedTask.labelIds ?? []
+
+  const toggleLabel = (labelId: string) => {
+    setUpdatedTask((s) => {
+      const current = s.labelIds ?? []
+      return {
+        ...s,
+        labelIds: current.includes(labelId)
+          ? current.filter((id) => id !== labelId)
+          : [...current, labelId],
+      }
+    })
+  }
+
+  const handleCreateLabel = async (name: string, color: string) => {
+    await createLabelMutation.mutateAsync({ name, color })
+  }
 
   const updateTask = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -111,20 +138,42 @@ const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
         </SelectField>
 
         <SelectField
-          label="Assignee"
-          value={updatedTask.assigneeId ?? ''}
+          label="Priority"
+          value={updatedTask.priority ?? task.priority}
           onChange={(value) =>
-            setUpdatedTask((s) => ({ ...s, assigneeId: value || null }))
+            setUpdatedTask((s) => ({ ...s, priority: value as TaskPriority }))
           }
         >
-          <option value="">Unassigned</option>
-          {members.map((member) => (
-            <option key={member.id} value={member.user.id}>
-              {member.user.name}
+          {PRIORITIES.map((priority) => (
+            <option key={priority.id} value={priority.id}>
+              {priority.title}
             </option>
           ))}
         </SelectField>
       </div>
+
+      <SelectField
+        label="Assignee"
+        value={updatedTask.assigneeId ?? ''}
+        onChange={(value) =>
+          setUpdatedTask((s) => ({ ...s, assigneeId: value || null }))
+        }
+      >
+        <option value="">Unassigned</option>
+        {members.map((member) => (
+          <option key={member.id} value={member.user.id}>
+            {member.user.name}
+          </option>
+        ))}
+      </SelectField>
+
+      <LabelPicker
+        selectedIds={selectedLabelIds}
+        availableLabels={availableLabels}
+        onToggle={toggleLabel}
+        onCreateLabel={handleCreateLabel}
+        isLoading={createLabelMutation.isPending}
+      />
     </ModalShell>
   )
 }

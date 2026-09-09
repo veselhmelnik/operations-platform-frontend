@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import {
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   KeyboardSensor,
   useSensor,
   useSensors,
@@ -37,8 +38,17 @@ export function useKanbanBoardDnd({
   const queryClient = useQueryClient()
   const moveTaskMutation = useMoveTask()
 
+  /* Mouse and touch are split deliberately. A single PointerSensor with a
+     distance constraint hijacks the first 5px of every touch gesture, which
+     on a phone means the board can no longer be scrolled — the swipe starts
+     a drag instead. TouchSensor's delay makes a quick swipe scroll and a
+     press-and-hold start the drag; `tolerance` allows a little finger drift
+     during that hold without cancelling it. */
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 6 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
