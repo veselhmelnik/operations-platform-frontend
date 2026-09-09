@@ -1,10 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export function proxy(request: NextRequest) {
-  const token = request.cookies.get('access_token')
   const pathname = request.nextUrl.pathname
 
-  if (!token && pathname !== '/login') {
+  if (pathname.startsWith('/backend')) {
+    return NextResponse.next()
+  }
+
+  const token = request.cookies.get('access_token')
+
+  const publicRoutes = [
+    '/login',
+    '/register',
+  ]
+
+  const isPublicRoute = publicRoutes.some(
+    (route) =>
+      pathname === route ||
+      pathname.startsWith('/invite/'),
+  )
+
+  if (!token && !isPublicRoute) {
     return NextResponse.redirect(
       new URL('/login', request.url),
     )
@@ -15,6 +31,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/organizations/:path*',
+    '/((?!_next/static|_next/image|favicon.ico|assets).*)',
   ],
 }
