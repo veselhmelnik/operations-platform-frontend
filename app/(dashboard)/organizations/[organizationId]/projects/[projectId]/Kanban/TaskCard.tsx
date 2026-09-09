@@ -61,27 +61,31 @@ export default function TaskCard({
             </p>
           )}
 
-          <div className="mt-2 flex flex-wrap items-center gap-1">
+          {/* Priority (right) + Labels (left) footer */}
+          <div className="mt-2.5 flex items-end justify-between gap-2">
+            {/* Labels on the left */}
+            {labels.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1 min-w-0">
+                {labels.map((label) => (
+                  <span
+                    key={label.id}
+                    className="shrink-0 rounded-full border px-1.5 py-0.5 text-3xs font-medium text-foreground"
+                    style={labelChipStyle(label.color)}
+                  >
+                    {label.name}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Priority on the right — more prominent with solid background */}
             <span
-              className="flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-3xs font-semibold tracking-[0.06em] text-foreground uppercase"
-              style={labelChipStyle(priority.color)}
+              className="shrink-0 flex items-center gap-1 rounded-full px-2 py-1 text-3xs font-semibold tracking-[0.06em] text-white uppercase"
+              style={{ background: priority.color }}
             >
-              <span
-                className="size-1 rounded-full"
-                style={{ background: priority.color }}
-              />
+              <span className="size-1.25 rounded-full" style={{ background: 'rgba(255,255,255,.6)' }} />
               {priority.title}
             </span>
-
-            {labels.map((label) => (
-              <span
-                key={label.id}
-                className="max-w-full truncate rounded-full border px-1.5 py-0.5 text-3xs font-medium text-foreground"
-                style={labelChipStyle(label.color)}
-              >
-                {label.name}
-              </span>
-            ))}
           </div>
         </div>
       </div>

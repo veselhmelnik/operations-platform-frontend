@@ -40,7 +40,6 @@ const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
   const { organizationId } = useProjectParams()
   const updateTaskMutation = useUpdateTask()
   const createLabelMutation = useCreateLabel(organizationId)
-
   const { data: members = [] } = useQuery({
     queryKey: queryKeys.organizationMembers(organizationId),
     queryFn: () => getOrganizationMembers(apiClient, organizationId),
