@@ -3,6 +3,24 @@ import { NextRequest, NextResponse } from 'next/server'
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
+  const demoOnly = process.env.DEMO_ONLY = 'true'
+
+  if (demoOnly) {
+    const isDemoRoute = pathname === '/demo' || pathname.startsWith('/demo/')
+
+    const isStatic =
+      pathname.startsWith('/_next/') ||
+      pathname.startsWith('/assets/') ||
+      pathname === '/favicon.ico'
+
+    if (!isDemoRoute && !isStatic) {
+      return NextResponse.redirect(
+        new URL('/demo', request.url),
+      )
+    }
+
+    return NextResponse.next()
+  }
   if (pathname.startsWith('/backend')) {
     return NextResponse.next()
   }
