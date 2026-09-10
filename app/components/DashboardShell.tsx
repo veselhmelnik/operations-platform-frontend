@@ -7,8 +7,10 @@ import Header from './Header'
 
 export default function DashboardShell({
   children,
+  demoMode=false
 }: {
   children: React.ReactNode
+  demoMode?: boolean
 }) {
   const [isNavOpen, setIsNavOpen] = useState(false)
   const pathname = usePathname()
@@ -31,7 +33,7 @@ export default function DashboardShell({
 
   return (
     <div className="flex h-dvh overflow-hidden">
-      <Sidebar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
+      <Sidebar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} demoMode/>
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Header onMenuClick={() => setIsNavOpen(true)} />

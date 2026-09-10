@@ -12,12 +12,14 @@ export function proxy(request: NextRequest) {
   const publicRoutes = [
     '/login',
     '/register',
+    '/demo'
   ]
 
   const isPublicRoute = publicRoutes.some(
     (route) =>
       pathname === route ||
-      pathname.startsWith('/invite/'),
+      pathname.startsWith('/invite/') ||
+      pathname.startsWith('/demo/'),
   )
 
   if (!token && !isPublicRoute) {

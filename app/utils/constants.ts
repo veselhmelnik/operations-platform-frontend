@@ -6,6 +6,12 @@ export enum Statuses {
   REVIEW = 'REVIEW',
   DONE = 'DONE',
 }
+export enum Priorities {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  URGENT = 'URGENT',
+}
 
 export interface Column {
   id: TaskStatus
