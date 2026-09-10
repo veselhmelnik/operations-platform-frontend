@@ -26,7 +26,6 @@ const Sidebar = ({ isOpen = false, onClose, demoMode = false }: SidebarProps) =>
   const dashboardHref = demoMode ? '/demo' : routes.organization(organizationId)
 
   if (demoMode && demoWorkspace) {
-    // Demo sidebar with hard-coded demo data
     return (
       <>
         <div
@@ -124,10 +123,8 @@ const Sidebar = ({ isOpen = false, onClose, demoMode = false }: SidebarProps) =>
     )
   }
 
-  // Production sidebar
   return (
     <>
-      {/* Scrim — mobile only, and never intercepts clicks while closed */}
       <div
         onClick={onClose}
         aria-hidden
@@ -153,7 +150,6 @@ const Sidebar = ({ isOpen = false, onClose, demoMode = false }: SidebarProps) =>
               </span>
             </Link>
 
-            {/* Drawer close — mobile only */}
             <button
               type="button"
               onClick={onClose}

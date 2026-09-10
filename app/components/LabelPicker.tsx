@@ -7,14 +7,14 @@ import { labelChipStyle } from '@/app/utils/helpers/task.helper'
 import { fieldInput, fieldLabel } from '@/app/utils/tailwind-constants'
 
 const COLOR_PRESETS = [
-  '#c9a2f0', // purple
-  '#ff6b6b', // red
-  '#4dabf7', // blue
-  '#51cf66', // green
-  '#ffd93d', // yellow
-  '#ff922b', // orange
-  '#a78bfa', // violet
-  '#ec4899', // pink
+  '#c9a2f0',
+  '#ff6b6b',
+  '#4dabf7',
+  '#51cf66',
+  '#ffd93d',
+  '#ff922b',
+  '#a78bfa',
+  '#ec4899',
 ]
 
 type LabelPickerProps = {

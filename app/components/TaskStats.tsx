@@ -7,7 +7,6 @@ const TaskStats = () => {
   const demoWorkspace = useDemoWorkspaceOptional()
   const prodBoard = useKanbanBoard().data
 
-  // Use demo board if in demo mode, otherwise use production board
   const board = demoWorkspace ? demoWorkspace.board : prodBoard
 
   if (!board) {

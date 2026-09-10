@@ -49,7 +49,6 @@ const Header = ({ onMenuClick }: { onMenuClick?: () => void }) => {
       </button>
 
       <div className="flex min-w-0 items-center gap-1.75 text-xs text-faint">
-        {/* The org is dropped on narrow screens — the project is what matters */}
         {organization && (
           <span className="hidden truncate sm:inline">{organization.name}</span>
         )}

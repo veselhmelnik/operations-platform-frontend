@@ -61,9 +61,7 @@ export default function TaskCard({
             </p>
           )}
 
-          {/* Priority (right) + Labels (left) footer */}
           <div className="mt-2.5 flex items-end justify-between gap-2">
-            {/* Labels on the left */}
             {labels.length > 0 && (
               <div className="flex flex-wrap items-center gap-1 min-w-0">
                 {labels.map((label) => (
@@ -78,7 +76,6 @@ export default function TaskCard({
               </div>
             )}
 
-            {/* Priority on the right — more prominent with solid background */}
             <span
               className="shrink-0 flex items-center gap-1 rounded-full px-2 py-1 text-3xs font-semibold tracking-[0.06em] text-white uppercase"
               style={{ background: priority.color }}

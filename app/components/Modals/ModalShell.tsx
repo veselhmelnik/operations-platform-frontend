@@ -29,8 +29,6 @@ export default function ModalShell({
 
   if (typeof document === 'undefined') return null
 
-  /* Fields scroll, header and footer stay put — otherwise a tall modal
-     (register, update task) overflows a phone viewport with no way back. */
   const body = (
     <>
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">

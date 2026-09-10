@@ -50,7 +50,6 @@ const AddTaskModal = ({ setIsAdding }: AddTaskModalProps) => {
     if (!newTask.title.trim()) return
 
     if (demoWorkspace) {
-      // Demo mode: create task locally
       setIsCreating(true)
       try {
         const newDemoTask: Task = {
@@ -73,7 +72,6 @@ const AddTaskModal = ({ setIsAdding }: AddTaskModalProps) => {
         setIsCreating(false)
       }
     } else {
-      // Production mode: use mutation
       createTaskMutation.mutate(newTask)
     }
   }

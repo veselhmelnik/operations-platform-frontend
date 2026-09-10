@@ -1,9 +1,15 @@
 'use client'
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
-import { Organization, Project, Board, OrganizationMember, Task } from '@/app/types'
+import {
+  Activity,
+  Board,
+  Organization,
+  OrganizationMember,
+  Project,
+  Task,
+} from '@/app/types'
 import { TaskLabel } from '@/app/types/task'
-import { Statuses } from '@/app/utils/constants'
 import {
   DEMO_BOARD,
   DEMO_MEMBERS,
@@ -21,7 +27,7 @@ type DemoWorkspaceState = {
   board: Board
   labels: TaskLabel[]
   members: OrganizationMember[]
-  activity: any[]
+  activity: Activity[]
 }
 
 type DemoWorkspaceContextValue = {
@@ -31,7 +37,7 @@ type DemoWorkspaceContextValue = {
   board: Board
   labels: TaskLabel[]
   members: OrganizationMember[]
-  activity: any[]
+  activity: Activity[]
 
   updateTask: (taskId: string, updates: Partial<Task>) => void
   deleteTask: (taskId: string) => void
@@ -75,7 +81,6 @@ export function DemoWorkspaceProvider({ children }: { children: React.ReactNode 
   const [state, setState] = useState<DemoWorkspaceState>(createInitialState())
   const [hydrated, setHydrated] = useState(false)
 
-  // Hydrate from localStorage on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem(DEMO_STORAGE_KEY)
@@ -90,7 +95,6 @@ export function DemoWorkspaceProvider({ children }: { children: React.ReactNode 
     }
   }, [])
 
-  // Persist state to localStorage whenever it changes (only after hydration)
   useEffect(() => {
     if (!hydrated) return
     try {
@@ -160,7 +164,6 @@ export function DemoWorkspaceProvider({ children }: { children: React.ReactNode 
         const newState = JSON.parse(JSON.stringify(prev)) as DemoWorkspaceState
         let task: Task | null = null
 
-        // Find and remove from current column
         for (const status in newState.board) {
           const tasks = newState.board[status as keyof Board]
           const taskIndex = tasks.findIndex((t) => t.id === taskId)
@@ -173,8 +176,7 @@ export function DemoWorkspaceProvider({ children }: { children: React.ReactNode 
 
         if (!task) return prev
 
-        // Update status and add to target column
-        task.status = targetStatus as any
+        task.status = targetStatus
         const targetTasks = newState.board[targetStatus]
         if (position !== undefined) {
           targetTasks.splice(position, 0, task)
@@ -182,7 +184,6 @@ export function DemoWorkspaceProvider({ children }: { children: React.ReactNode 
           targetTasks.push(task)
         }
 
-        // Re-normalize positions
         for (const status in newState.board) {
           newState.board[status as keyof Board].forEach((t, idx) => {
             t.position = idx

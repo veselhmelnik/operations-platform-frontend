@@ -16,8 +16,6 @@ export default function DashboardShell({
   const pathname = usePathname()
   const [lastPathname, setLastPathname] = useState(pathname)
 
-  /* Close the drawer on navigation. Adjusting state during render is React's
-     documented pattern for this — an effect here would be a cascading render. */
   if (pathname !== lastPathname) {
     setLastPathname(pathname)
     setIsNavOpen(false)
@@ -33,7 +31,11 @@ export default function DashboardShell({
 
   return (
     <div className="flex h-dvh overflow-hidden">
-      <Sidebar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} demoMode/>
+      <Sidebar
+        isOpen={isNavOpen}
+        onClose={() => setIsNavOpen(false)}
+        demoMode={demoMode}
+      />
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Header onMenuClick={() => setIsNavOpen(true)} />

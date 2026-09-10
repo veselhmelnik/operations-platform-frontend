@@ -69,7 +69,6 @@ const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
 
   const handleCreateLabel = async (name: string, color: string) => {
     if (demoWorkspace) {
-      // Demo mode: add label directly to workspace
       const newLabel = {
         id: `label-${Date.now()}`,
         name,
@@ -77,7 +76,6 @@ const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
       }
       demoWorkspace.createLabel(newLabel)
     } else {
-      // Production mode: use mutation
       await createLabelMutation.mutateAsync({ name, color })
     }
   }
@@ -85,11 +83,10 @@ const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
   const updateTask = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (demoWorkspace) {
-      // Demo mode: update local state
       demoWorkspace.updateTask(task.id, {
         title: updatedTask.title,
         description: updatedTask.description,
-        status: updatedTask.status as any,
+        status: updatedTask.status,
         priority: updatedTask.priority,
         assigneeId: updatedTask.assigneeId,
         labels: (updatedTask.labelIds ?? []).map((labelId) => {
@@ -98,7 +95,6 @@ const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
         }),
       })
     } else {
-      // Production mode: use mutation
       updateTaskMutation.mutate({ taskId: task.id, data: updatedTask })
     }
     setIsAdding(false)

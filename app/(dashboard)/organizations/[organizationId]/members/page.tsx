@@ -74,10 +74,6 @@ const MembersPage = () => {
       </div>
 
       {members.length > 0 ? (
-        /* A list rather than a table: with three columns (one of them a
-           composite avatar+name+email) this reflows onto two lines on a
-           phone from a single markup, instead of needing a second mobile
-           layout or a sideways-scrolling table. */
         <ul className="divide-y divide-border-soft overflow-hidden rounded-xl border border-border-soft bg-card">
           {members.map((member) => (
             <li
@@ -100,7 +96,6 @@ const MembersPage = () => {
                 </div>
               </div>
 
-              {/* Wraps to its own full-width line below sm, aligned under the name */}
               <div className="flex items-center justify-between gap-2 max-sm:w-full max-sm:pl-9.5">
                 {editingMemberId === member.id ? (
                   <>

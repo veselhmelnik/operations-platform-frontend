@@ -57,7 +57,6 @@ export function useDemoKanbanBoardDnd({
 
     if (!target) return
 
-    // Calculate preview in memory but don't persist yet
     moveTaskInBoard(board, active.id as string, target.status, target.position)
   }
 
@@ -73,14 +72,13 @@ export function useDemoKanbanBoardDnd({
 
     if (!target) return
 
-    const { status, position } = moveTaskInBoard(
+    const { position } = moveTaskInBoard(
       board,
       taskId,
       target.status,
       target.position,
     )
 
-    // Call demo workspace mutation to persist the move
     moveTask(taskId, target.status, position)
   }
 
