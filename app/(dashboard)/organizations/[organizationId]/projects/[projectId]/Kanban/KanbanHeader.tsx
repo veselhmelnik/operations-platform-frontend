@@ -6,11 +6,14 @@ import { useProjectParams } from '@/app/hooks/useParams'
 import { useCurrentMember } from '@/app/hooks/useCurrentMember'
 import { canManageWorkspace } from '@/app/utils/helpers/role.helper'
 import { btnPrimary } from '@/app/utils/tailwind-constants'
+import { useDemoWorkspaceOptional } from '@/app/demo/demo-workspace-context'
 
 const KanbanHeader = () => {
-  const { organizationId } = useProjectParams()
+  const demoWorkspace = useDemoWorkspaceOptional()
+  const prodParams = useProjectParams()
+  const organizationId = demoWorkspace ? demoWorkspace.organization.id : prodParams.organizationId
   const currentMember = useCurrentMember(organizationId)
-  const canAddTask = canManageWorkspace(currentMember?.role)
+  const canAddTask = demoWorkspace ? true : canManageWorkspace(currentMember?.role)
   const [isAddingTask, setIsAddingTask] = useState(false)
 
   return (

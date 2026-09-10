@@ -43,35 +43,37 @@ type DemoWorkspaceContextValue = {
 
 const DemoWorkspaceContext = createContext<DemoWorkspaceContextValue | undefined>(undefined)
 
+function createInitialState(): DemoWorkspaceState {
+  const org: Organization = {
+    id: DEMO_ORGANIZATION.id,
+    name: DEMO_ORGANIZATION.name,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  const project: Project = {
+    id: DEMO_PROJECT.id,
+    name: DEMO_PROJECT.name,
+    description: DEMO_PROJECT.description,
+    organizationId: org.id,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  return {
+    organization: org,
+    projects: [project],
+    currentProject: project,
+    board: JSON.parse(JSON.stringify(DEMO_BOARD)),
+    labels: DEMO_LABELS,
+    members: DEMO_MEMBERS,
+    activity: [],
+  }
+}
+
 export function DemoWorkspaceProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<DemoWorkspaceState>(() => {
-    // Initialize with mock data; will hydrate from localStorage after mount
-    const org: Organization = {
-      id: DEMO_ORGANIZATION.id,
-      name: DEMO_ORGANIZATION.name,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-
-    const project: Project = {
-      id: DEMO_PROJECT.id,
-      name: DEMO_PROJECT.name,
-      description: DEMO_PROJECT.description,
-      organizationId: org.id,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-
-    return {
-      organization: org,
-      projects: [project],
-      currentProject: project,
-      board: JSON.parse(JSON.stringify(DEMO_BOARD)),
-      labels: DEMO_LABELS,
-      members: DEMO_MEMBERS,
-      activity: [],
-    }
-  })
+  const [state, setState] = useState<DemoWorkspaceState>(createInitialState())
+  const [hydrated, setHydrated] = useState(false)
 
   // Hydrate from localStorage on mount
   useEffect(() => {
@@ -83,17 +85,20 @@ export function DemoWorkspaceProvider({ children }: { children: React.ReactNode 
       }
     } catch (e) {
       console.error('Failed to load demo workspace from storage:', e)
+    } finally {
+      setHydrated(true)
     }
   }, [])
 
-  // Persist state to localStorage whenever it changes
+  // Persist state to localStorage whenever it changes (only after hydration)
   useEffect(() => {
+    if (!hydrated) return
     try {
       localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(state))
     } catch (e) {
       console.error('Failed to save demo workspace to storage:', e)
     }
-  }, [state])
+  }, [state, hydrated])
 
   const updateTask = useCallback(
     (taskId: string, updates: Partial<Task>) => {

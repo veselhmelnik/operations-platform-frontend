@@ -13,18 +13,25 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import ModalShell from './ModalShell'
+import { useDemoWorkspaceOptional } from '@/app/demo/demo-workspace-context'
+import { Task } from '@/app/types'
+import { Statuses, Priorities } from '@/app/utils/constants'
 
 type AddTaskModalProps = {
   setIsAdding: (v: boolean) => void
 }
 
 const AddTaskModal = ({ setIsAdding }: AddTaskModalProps) => {
+  const demoWorkspace = useDemoWorkspaceOptional()
   const [newTask, setNewTask] = useState<CreateTaskPayload>({
     title: '',
     description: '',
   })
+  const [isCreating, setIsCreating] = useState(false)
   const queryClient = useQueryClient()
-  const { organizationId, projectId } = useProjectParams()
+  const prodParams = useProjectParams()
+  const organizationId = demoWorkspace ? demoWorkspace.organization.id : prodParams.organizationId
+  const projectId = demoWorkspace ? demoWorkspace.currentProject.id : prodParams.projectId
 
   const createTaskMutation = useMutation({
     mutationFn: (task: CreateTaskPayload) =>
@@ -42,7 +49,33 @@ const AddTaskModal = ({ setIsAdding }: AddTaskModalProps) => {
     e.preventDefault()
     if (!newTask.title.trim()) return
 
-    createTaskMutation.mutate(newTask)
+    if (demoWorkspace) {
+      // Demo mode: create task locally
+      setIsCreating(true)
+      try {
+        const newDemoTask: Task = {
+          id: `task-${Date.now()}`,
+          title: newTask.title,
+          description: newTask.description || null,
+          status: Statuses.TODO,
+          priority: Priorities.MEDIUM,
+          position: demoWorkspace.board[Statuses.TODO]?.length || 0,
+          projectId,
+          assigneeId: null,
+          assignee: null,
+          labels: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+        demoWorkspace.addTask(newDemoTask)
+        setIsAdding(false)
+      } finally {
+        setIsCreating(false)
+      }
+    } else {
+      // Production mode: use mutation
+      createTaskMutation.mutate(newTask)
+    }
   }
 
   return (
@@ -61,10 +94,10 @@ const AddTaskModal = ({ setIsAdding }: AddTaskModalProps) => {
           </button>
           <button
             type="submit"
-            disabled={createTaskMutation.isPending}
+            disabled={demoWorkspace ? isCreating : createTaskMutation.isPending}
             className={btnPrimary}
           >
-            {createTaskMutation.isPending ? 'Creating…' : 'Add task'}
+            {demoWorkspace ? (isCreating ? 'Creating…' : 'Add task') : createTaskMutation.isPending ? 'Creating…' : 'Add task'}
           </button>
         </>
       }
