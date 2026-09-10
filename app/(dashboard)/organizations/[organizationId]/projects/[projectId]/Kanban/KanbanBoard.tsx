@@ -7,12 +7,24 @@ import TaskCard from './TaskCard'
 import ColumnContainer from './ColumnContainer'
 import { useProjectParams } from '@/app/hooks/useParams'
 import { useKanbanBoardDnd } from '@/app/hooks/useKanbanBoardDnd'
+import { useDemoKanbanBoardDnd } from '@/app/demo/use-demo-kanban-board-dnd'
 import { useKanbanBoard } from '@/app/hooks/UseKanbanBoard'
+import { Board } from '@/app/types'
+type KanbanBoardProps = {
+  board: Board
+  organizationId: string
+  projectId: string
+  demoMode?: boolean
+}
+export function KanbanBoard({
+  board,
+  organizationId,
+  projectId,
+  demoMode = false,
+}: KanbanBoardProps) {
+  // const { organizationId, projectId } = useProjectParams()
 
-export function KanbanBoard() {
-  const { organizationId, projectId } = useProjectParams()
-
-  const { data: board } = useKanbanBoard()
+  // const { data: board } = useKanbanBoard()
   const tasks = board ? Object.values(board).flat() : []
 
   const {
@@ -21,12 +33,14 @@ export function KanbanBoard() {
     handleDragStart,
     handleDragOver,
     handleDragEnd,
-  } = useKanbanBoardDnd({
-    board,
-    tasks,
-    organizationId,
-    projectId,
-  })
+  } = demoMode
+    ? useDemoKanbanBoardDnd({ board, tasks })
+    : useKanbanBoardDnd({
+        board,
+        tasks,
+        organizationId,
+        projectId,
+      })
 
   const stripRef = useRef<HTMLDivElement>(null)
   const [activeColumn, setActiveColumn] = useState(0)

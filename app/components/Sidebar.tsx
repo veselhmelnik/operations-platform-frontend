@@ -10,15 +10,20 @@ import SidebarUser from './SidebarUser'
 import LogoMark from './LogoMark'
 import { useOrganizationParams } from '../hooks/useParams'
 import { routes } from '../lib/routes'
+import { useDemoWorkspaceOptional } from '@/app/demo/demo-workspace-context'
 
 type SidebarProps = {
   isOpen?: boolean
+  demoMode?: boolean
   onClose?: () => void
 }
 
-const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
-  const { organizationId } = useOrganizationParams()
-  const dashboardHref = routes.organization(organizationId)
+const Sidebar = ({ isOpen = false, onClose, demoMode = false }: SidebarProps) => {
+  const demoWorkspace = useDemoWorkspaceOptional()
+  const prodParams = useOrganizationParams()
+
+  const organizationId = demoWorkspace ? demoWorkspace.organization.id : prodParams.organizationId
+  const dashboardHref = demoMode ? '/demo' : routes.organization(organizationId)
   return (
     <>
       {/* Scrim — mobile only, and never intercepts clicks while closed */}

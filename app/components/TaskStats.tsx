@@ -1,10 +1,16 @@
 'use client'
 import { IoIosArrowForward } from 'react-icons/io'
 import { useKanbanBoard } from '../hooks/UseKanbanBoard'
+import { useDemoWorkspaceOptional } from '@/app/demo/demo-workspace-context'
 
 const TaskStats = () => {
-  const { data: board } = useKanbanBoard()
-    if (!board) {
+  const demoWorkspace = useDemoWorkspaceOptional()
+  const prodBoard = useKanbanBoard().data
+
+  // Use demo board if in demo mode, otherwise use production board
+  const board = demoWorkspace ? demoWorkspace.board : prodBoard
+
+  if (!board) {
     return null
   }
   const total = Object.values(board).flat().length

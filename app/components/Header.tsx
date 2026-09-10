@@ -9,23 +9,33 @@ import { getOrganizations } from '../lib/api/organizations'
 import { getProjects } from '../lib/api/projects'
 import { queryKeys } from '../lib/queryKeys'
 import { useProjectParams } from '../hooks/useParams'
+import { useDemoWorkspaceOptional } from '@/app/demo/demo-workspace-context'
 
 const Header = ({ onMenuClick }: { onMenuClick?: () => void }) => {
-  const { organizationId, projectId } = useProjectParams()
+  const demoWorkspace = useDemoWorkspaceOptional()
+  const prodParams = useProjectParams()
+
+  const organizationId = demoWorkspace ? demoWorkspace.organization.id : prodParams.organizationId
+  const projectId = demoWorkspace ? demoWorkspace.currentProject.id : prodParams.projectId
 
   const { data: organizations = [] } = useQuery({
     queryKey: queryKeys.organizations,
     queryFn: () => getOrganizations(apiClient),
+    enabled: !demoWorkspace,
   })
 
   const { data: projects = [] } = useQuery({
     queryKey: queryKeys.projects(organizationId),
     queryFn: () => getProjects(apiClient, organizationId),
-    enabled: !!organizationId,
+    enabled: !demoWorkspace && !!organizationId,
   })
 
-  const organization = organizations.find((org) => org.id === organizationId)
-  const project = projects.find((proj) => proj.id === projectId)
+  const organization = demoWorkspace
+    ? demoWorkspace.organization
+    : organizations.find((org) => org.id === organizationId)
+  const project = demoWorkspace
+    ? demoWorkspace.currentProject
+    : projects.find((proj) => proj.id === projectId)
 
   return (
     <header className="flex h-14.5 shrink-0 items-center gap-2 border-b border-border-soft bg-card px-3 md:gap-3.5 md:px-5">

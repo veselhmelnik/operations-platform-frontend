@@ -22,6 +22,7 @@ import React, { useState } from 'react'
 import ModalShell from './ModalShell'
 import SelectField from '../SelectField'
 import { LabelPicker } from '../LabelPicker'
+import { useDemoWorkspaceOptional } from '@/app/demo/demo-workspace-context'
 
 type UpdateTaskModalProps = {
   setIsAdding: (v: boolean) => void
@@ -29,6 +30,7 @@ type UpdateTaskModalProps = {
 }
 
 const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
+  const demoWorkspace = useDemoWorkspaceOptional()
   const [updatedTask, setUpdatedTask] = useState<UpdateTaskPayload>({
     title: task.title,
     description: task.description,
@@ -37,15 +39,19 @@ const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
     assigneeId: task.assigneeId,
     labelIds: (task.labels ?? []).map(({ label }) => label.id),
   })
-  const { organizationId } = useProjectParams()
+  const prodParams = useProjectParams()
+  const organizationId = demoWorkspace ? demoWorkspace.organization.id : prodParams.organizationId
   const updateTaskMutation = useUpdateTask()
   const createLabelMutation = useCreateLabel(organizationId)
-  const { data: members = [] } = useQuery({
+  const { data: prodMembers = [] } = useQuery({
     queryKey: queryKeys.organizationMembers(organizationId),
     queryFn: () => getOrganizationMembers(apiClient, organizationId),
+    enabled: !demoWorkspace,
   })
+  const members = demoWorkspace ? demoWorkspace.members : prodMembers
 
-  const { data: availableLabels = [] } = useOrganizationLabels()
+  const { data: demoLabels = [] } = useOrganizationLabels()
+  const availableLabels = demoWorkspace ? demoWorkspace.labels : demoLabels
 
   const selectedLabelIds = updatedTask.labelIds ?? []
 
@@ -62,12 +68,39 @@ const UpdateTaskModal = ({ setIsAdding, task }: UpdateTaskModalProps) => {
   }
 
   const handleCreateLabel = async (name: string, color: string) => {
-    await createLabelMutation.mutateAsync({ name, color })
+    if (demoWorkspace) {
+      // Demo mode: add label directly to workspace
+      const newLabel = {
+        id: `label-${Date.now()}`,
+        name,
+        color,
+      }
+      demoWorkspace.createLabel(newLabel)
+    } else {
+      // Production mode: use mutation
+      await createLabelMutation.mutateAsync({ name, color })
+    }
   }
 
   const updateTask = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    updateTaskMutation.mutate({ taskId: task.id, data: updatedTask })
+    if (demoWorkspace) {
+      // Demo mode: update local state
+      demoWorkspace.updateTask(task.id, {
+        title: updatedTask.title,
+        description: updatedTask.description,
+        status: updatedTask.status as any,
+        priority: updatedTask.priority,
+        assigneeId: updatedTask.assigneeId,
+        labels: (updatedTask.labelIds ?? []).map((labelId) => {
+          const label = availableLabels.find((l) => l.id === labelId)
+          return { label: label || { id: labelId, name: '', color: '' } }
+        }),
+      })
+    } else {
+      // Production mode: use mutation
+      updateTaskMutation.mutate({ taskId: task.id, data: updatedTask })
+    }
     setIsAdding(false)
   }
 
