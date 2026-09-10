@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  const demoOnly = process.env.DEMO_ONLY = 'true'
+  const demoOnly = process.env.DEMO_ONLY
 
   if (demoOnly) {
     const isDemoRoute = pathname === '/demo' || pathname.startsWith('/demo/')
